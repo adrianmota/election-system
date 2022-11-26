@@ -1,5 +1,6 @@
 const express = require('express');
 const { engine } = require('express-handlebars');
+const sequelize = require('./context/appContext');
 const errorController = require('./controllers/errorController');
 
 const hostname = '127.0.0.1';
@@ -19,4 +20,6 @@ app.set('views', 'views');
 // Middlewares
 app.use('/', errorController.get404);
 
-app.listen(port, hostname, () => console.log(`http://${hostname}:${port}/`));
+sequelize.sync()
+    .then(result => app.listen(port, hostname, () => console.log(`http://${hostname}:${port}/`)))
+    .catch(err => console.error(err));
