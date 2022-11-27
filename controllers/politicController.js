@@ -7,7 +7,8 @@ exports.getIndex = (req, res, next) => {
             res.render('politic/index', {
                 title: 'Partidos',
                 politics,
-                hasPolitics: politics.length > 0
+                hasPolitics: politics.length > 0,
+                hasError: false,
             });
         }).catch(err => console.error(err));
 }
