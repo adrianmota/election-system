@@ -3,6 +3,11 @@ const { engine } = require('express-handlebars');
 const sequelize = require('./context/appContext');
 const errorController = require('./controllers/errorController');
 
+//Models
+const citizen = require('./models/citizen');
+const electivePosition = require('./models/electivePosition');
+const politic = require('./models/politic');
+
 const hostname = '127.0.0.1';
 const port = 5000;
 
