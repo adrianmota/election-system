@@ -29,9 +29,9 @@ app.set('view engine', 'hbs');
 app.set('views', 'views');
 
 // Middlewares
-app.use("admin",citizenRoute);
-app.use("admin",politicRoute);
-app.use("admin",electivePositionRoute);
+app.use("admin", citizenRoute);
+app.use("admin", politicRoute);
+app.use("admin", electivePositionRoute);
 app.use('/', errorController.get404);
 
 sequelize.sync()
