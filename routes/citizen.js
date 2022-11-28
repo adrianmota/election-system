@@ -1,15 +1,12 @@
-const {Router} = require("express");
+const { Router } = require("express");
 const router = Router();
 
 const citizenController = require("../controllers/citizenController");
 
-router.get("/admin/citizen",citizenController.getIndex);
+router.get("/citizen", citizenController.getIndex);
 
-router.post("/admin/createCitzen",citizenController.createCitizenPost);
-router.post("/admin/editCitezen",citizenController.editCitizenPost);
-router.post("/admin/changeStatusCitizen",citizenController.changeStatusCitizen);
-
-
+router.post("/createCitizen", citizenController.createCitizenPost);
+router.post("/editCitizen", citizenController.editCitizenPost);
+router.post("/changeStatusCitizen", citizenController.changeStatusCitizen);
 
 module.exports = router;
-

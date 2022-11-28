@@ -5,6 +5,17 @@
         </button>
     </div>
 
+    {{#if hasError}}
+        <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{errorMessage}}
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    {{/if}}
+   
     {{!-- Create Modal --}}
     <div class="modal fade" id="save" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -13,32 +24,32 @@
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Crear Nuevo Ciudadano</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="id">
-                            <label for="id" name="id" class="col-form-label">Documento de Identidad:</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="firstname">
-                            <label for="firstname" name="firstname" class="col-form-label">Nombre:</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="lastname">
-                            <label for="lastname" name="lastname" class="col-form-label">Apellido:</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="email">
-                            <label for="email" name="email" class="col-form-label">Email:</label>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <form method="POST" action="/admin/createCitzen">
-                        <button type="button" class="btn btn-primary">Guardar</button>
-                    </form>
-                </div>
+                <form method="POST" action="/admin/createCitizen">
+                    <div class="modal-body">
+                        <section>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="id" name="Id" placeholder="id">
+                                <label for="id" class="col-form-label">Documento de Identidad</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="firstname" name="FirstName" placeholder="firstname">
+                                <label for="firstname" class="col-form-label">Nombre</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="lastname" name="LastName" placeholder="lastname">
+                                <label for="lastname" class="col-form-label">Apellido</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="email" name="Email" placeholder="email">
+                                <label for="email" class="col-form-label">Email</label>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
