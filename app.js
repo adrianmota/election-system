@@ -32,6 +32,7 @@ app.set("view engine", "hbs");
 app.set("views", "views");
 
 // Middlewares
+app.use(express.urlencoded({ extended: false }));
 app.use("/admin", citizenRoute);
 app.use("/admin", politicRoute);
 app.use("/admin", electivePositionRoute);
@@ -40,6 +41,6 @@ app.use("/", errorController.get404);
 sequelize
   .sync()
   .then((result) =>
-    app.listen(port, hostname, () => console.log(`http://${hostname}:${port}/`))
+    app.listen(port, hostname, () => console.log(`App running at http://${hostname}:${port}/`))
   )
   .catch((err) => console.error(err));

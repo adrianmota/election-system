@@ -22,6 +22,10 @@ exports.createCitizenPost = (req, res, next) => {
   let hasError = false;
   let errorMessage = "";
 
+  console.log(req.body);
+  res.redirect('/admin/citizen');
+  return;
+
   const citizenVM = {
     id: req.body.Id,
     firstName: req.body.FirstName,
