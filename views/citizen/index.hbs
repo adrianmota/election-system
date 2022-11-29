@@ -1,6 +1,6 @@
 <div class="row">
-    <div class="col-10 mx-auto my-5">    
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#save">
+    <div class="col-12 mx-auto my-5">    
+        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#save">
             Crear nuevo ciudadano
         </button>
     </div>
@@ -15,13 +15,14 @@
             </div>
         </div>
     {{/if}}
-   
+
     {{!-- Create Modal --}}
     <div class="modal fade" id="save" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Crear Nuevo Ciudadano</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        Crear Nuevo Ciudadano</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="POST" action="/admin/createCitizen">
@@ -32,11 +33,13 @@
                                 <label for="id" class="col-form-label">Documento de Identidad</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="firstname" name="FirstName" placeholder="firstname">
+                                <input type="text" class="form-control" id="firstname" name="FirstName"
+                                    placeholder="firstname">
                                 <label for="firstname" class="col-form-label">Nombre</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="lastname" name="LastName" placeholder="lastname">
+                                <input type="text" class="form-control" id="lastname" name="LastName"
+                                    placeholder="lastname">
                                 <label for="lastname" class="col-form-label">Apellido</label>
                             </div>
                             <div class="form-floating mb-3">
@@ -54,102 +57,123 @@
         </div>
     </div>
     {{!-- Create Modal --}}
-
-    <!-- Delete Modal -->
-    <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar ciudadano</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="">¿Seguro de que desea eliminar este ciudadano?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <form method="POST" action="/admin/deleteCitizen">
-                        <button type="button" class="btn btn-danger">Eliminar</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Delete Modal -->
-
-    <!-- Status Modal -->
-    <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar ciudadano</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="">¿Seguro de que desea eliminar este ciudadano?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <form method="POST" action="/admin/changeStatusCitizen">
-                            {{#if citizen.status}}
-                                <button type="button" class="btn btn-danger">
-                                    Desactivar
-                                </button>
-                            {{else}}
-                                <button type="button" class="btn btn-primary">
-                                    Activar
-                                </button>
-                            {{/if}}
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Status Modal -->
+    
 
     {{#if hasCitizen}}
-    <section class="col-8 mx-auto">
-        <table class="table table-responsive table-striped text-white">
-            <thead class="bg-success">
+    <section class="col-12 mx-auto">
+        <table class="table table-responsive table-striped">
+            <thead class="bg-dark text-white">
                 <tr>
                     <th scope="col">Id</th>
                     <th scope="col">Nombre</th>
                     <th scope="col">Apellido</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Status</th>
-                    <th scope="col" class="text-center">Options</th>
+                    <th scope="col" class="text-center">Estado</th>
+                    <th scope="col" class="text-center">Opciones</th>
                 </tr>
             </thead>
             <tbody>
-                {{#each citizen}}
+                {{#each citizen as |citizen|}}
                 <tr>
-                    <td class="fs-5">{{citizen.id}}</td>
-                    <td class="fs-5">{{citizen.firstname}}</td>
-                    <td class="fs-5">{{citizen.lastname}}</td>
-                    <td class="fs-5">{{citizen.email}}</td>
+                    <td>{{citizen.id}}</td>
+                    <td>{{citizen.firstName}}</td>
+                    <td>{{citizen.lastName}}</td>
+                    <td>{{citizen.email}}</td>
 
                     {{#if citizen.status}}
-                        <td class="fs-5">
-                            <button class="btn btn-danger">Desactivar</button>
+                        <td>
+                            <button class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#status-{{citizen.firstName}}">Desactivar</button>
                         </td>
 
                         {{else}}
 
-                        <td class="fs-5">
-                            <button class="btn btn-success">Activar</button>
+                        <td>
+                            <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#status-{{citizen.firstName}}">Activar</button>
                         </td>
 
                     {{/if}}
 
                     <td class="d-flex gap-2">
-                        <button type="button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#save">
+                        <button type="button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#edit-{{citizen.firstName}}">
                             Editar
-                        </button>
-                        <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#delete">
-                            Eliminar
                         </button>
                     </td>
                 </tr>
+
+                {{!-- Edit Modal --}}
+                <div class="modal fade" id="edit-{{citizen.firstName}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Ciudadano</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form method="POST" action="/admin/editCitizen">
+                                <div class="modal-body">
+                                    <section>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="id" name="Id" 
+                                                placeholder="id" value="{{citizen.id}}">
+                                            <label for="id" class="col-form-label">Documento de Identidad</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="firstname" name="FirstName"
+                                                placeholder="firstname" value="{{citizen.firstName}}">
+                                            <label for="firstname" class="col-form-label">Nombre</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="lastname" name="LastName"
+                                                placeholder="lastname" value="{{citizen.lastName}}">
+                                            <label for="lastname" class="col-form-label">Apellido</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="email" class="form-control" id="email" name="Email" placeholder="email" value="{{citizen.email}}">
+                                            <label for="email" class="col-form-label">Email</label>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {{!-- Edit Modal --}}
+
+                <!-- Status Modal -->
+                <div class="modal fade" id="status-{{citizen.firstName}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Cambiar Estado</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="">
+                                    ¿Seguro de que desea cambiar el estado de <strong> {{citizen.firstName}} {{citizen.lastName}}</strong>?
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <form method="POST" action="/admin/changeStatusCitizen/{{citizen.id}}">
+                                    {{#if citizen.status}}
+                                    <button type="submit" class="btn btn-danger">
+                                        Desactivar
+                                    </button>
+                                    {{else}}
+                                    <button type="submit" class="btn btn-primary">
+                                        Activar
+                                    </button>
+                                    {{/if}}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Status Modal -->
+
                 {{/each}}
             </tbody>
         </table>

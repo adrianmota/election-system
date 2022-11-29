@@ -7,6 +7,9 @@ router.get("/citizen", citizenController.getIndex);
 
 router.post("/createCitizen", citizenController.createCitizenPost);
 router.post("/editCitizen", citizenController.editCitizenPost);
-router.post("/changeStatusCitizen", citizenController.changeStatusCitizen);
+router.post(
+  "/changeStatusCitizen/:idCitizen",
+  citizenController.changeStatusCitizen
+);
 
 module.exports = router;
