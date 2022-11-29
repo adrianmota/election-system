@@ -31,7 +31,7 @@ const imageStorage = multer.diskStorage({
     cb(null, "img/politics");
   },
   filename: (req, file, cb) => {
-    const filenameSpplited = file.originalname.split('.');
+    const filenameSpplited = file.originalname.split(".");
     const extname = filenameSpplited[filenameSpplited.length - 1];
     cb(null, `${uuidv4()}.${extname}`);
   },

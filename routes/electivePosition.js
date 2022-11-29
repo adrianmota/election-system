@@ -12,8 +12,8 @@ router.post(
   electivePositionController.postEditElectivePosition
 );
 router.post(
-    "/changeElectivePositionStatus",
-    electivePositionController.postChangeElectivePositionStatus
-)
+  "/changeElectivePositionStatus",
+  electivePositionController.postChangeElectivePositionStatus
+);
 
 module.exports = router;

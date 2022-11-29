@@ -20,7 +20,7 @@ const ElectivePosition = sequelize.define("ElectivePosition", {
   status: {
     type: Sequelize.BOOLEAN,
     defaultValue: true,
-  }
+  },
 });
 
 module.exports = ElectivePosition;

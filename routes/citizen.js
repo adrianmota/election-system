@@ -1,6 +1,5 @@
 const { Router } = require("express");
 const router = Router();
-
 const citizenController = require("../controllers/citizenController");
 
 router.get("/citizen", citizenController.getIndex);
