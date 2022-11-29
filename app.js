@@ -1,6 +1,8 @@
 const express = require("express");
 const { engine } = require("express-handlebars");
 const sequelize = require("./context/appContext");
+const multer = require("multer");
+const { v4: uuidv4 } = require("uuid");
 
 const errorController = require("./controllers/errorController");
 
@@ -32,7 +34,21 @@ app.set("view engine", "hbs");
 app.set("views", "views");
 
 // Middlewares
+app.use("/img",express.static(path.join(__dirname, "img")));
+
 app.use(express.urlencoded({ extended: false }));
+
+const imageStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, "img/politic");
+  },
+  filename: (req, file, cb) => {
+      cb(null, `${uuidv4()}`);
+  },
+});
+
+app.use(multer({ storage: imageStorage }).single("Image"));
+
 app.use("/admin", citizenRoute);
 app.use("/admin", politicRoute);
 app.use("/admin", electivePositionRoute);
