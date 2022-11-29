@@ -86,7 +86,7 @@ exports.postEditPolitic = (req, res, next) => {
   Politic.findOne({ where: { Id } })
     .then((result) => {
       const oldPolitic = result.dataValues;
-      politic.logoImg = !imageFile ? oldPolitic.logoImg : imageFile.path;
+      politic.logoImg = !imageFile ? oldPolitic.logoImg : `/${imageFile.path}`;
       Politic.update(
         {
           name: politic.name,
@@ -101,13 +101,13 @@ exports.postEditPolitic = (req, res, next) => {
     .catch((err) => console.error(err));
 };
 
-exports.postDeletePolitic = (req, res, next) => {
+exports.postChangePoliticStatus = (req, res, next) => {
   const { Id } = req.body;
 
   Politic.findOne({ where: { Id } })
     .then((result) => {
       const politic = result.dataValues;
-      politic.status = false;
+      politic.status = !politic.status;
       Politic.update(
         {
           name: politic.name,

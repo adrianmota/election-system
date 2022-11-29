@@ -26,13 +26,14 @@ app.use("/img", express.static(path.join(__dirname, "img")));
 
 app.use(express.urlencoded({ extended: false }));
 
-
 const imageStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'img/politics');
+    cb(null, "img/politics");
   },
   filename: (req, file, cb) => {
-    cb(null, `${uuidv4()}-${file.originalname}`);
+    const filenameSpplited = file.originalname.split('.');
+    const extname = filenameSpplited[filenameSpplited.length - 1];
+    cb(null, `${uuidv4()}.${extname}`);
   },
 });
 
