@@ -23,61 +23,20 @@ exports.createCitizenPost = (req, res, next) => {
   let errorMessage = "";
 
   console.log(req.body);
-  res.redirect('/admin/citizen');
-  return;
+  const { DocumentId, FirstName, LastName, Email } = req.body;
 
-  const citizenVM = {
-    id: req.body.Id,
-    firstName: req.body.FirstName,
-    lastName: req.body.LastName,
-    email: req.body.Email,
-    status: true,
-  };
-
-  if (
-    (citizenVM.id == null || citizenVM.id == undefined || citizenVM.id == "") &&
-    !hasError
-  ) {
+  if (!DocumentId || !FirstName || !LastName || !Email) {
     hasError = true;
-    errorMessage = "The identification field is required.";
+    errorMessage = "Todos los campos son obligatorios";
   }
+  console.log(errorMessage);
 
-  if (
-    (citizenVM.firstName == null ||
-      citizenVM.firstName == undefined ||
-      citizenVM.firstName == "") &&
-    !hasError
-  ) {
-    hasError = true;
-    errorMessage = "The first name field is required.";
-  }
-
-  if (
-    (citizenVM.lastName == null ||
-      citizenVM.lastName == undefined ||
-      citizenVM.lastName == "") &&
-    !hasError
-  ) {
-    hasError = true;
-    errorMessage = "The last name field is required.";
-  }
-
-  if (
-    (citizenVM.email == null ||
-      citizenVM.email == undefined ||
-      citizenVM.email == "") &&
-    !hasError
-  ) {
-    hasError = true;
-    errorMessage = "The email field is required.";
-  }
-
-  if (!hasError) {
+  if (hasError) {
     Citizen.findAll()
       .then((result) => {
         const citizen = result.map((result) => result.dataValues);
 
-        res.render("citize/index", {
+        res.render("citizen/index", {
           pageTitle: "Citizen",
           module: "citizen",
           hasCitizen: citizen.length > 0,
@@ -85,85 +44,144 @@ exports.createCitizenPost = (req, res, next) => {
           hasError: hasError,
           errorMessage: errorMessage,
         });
-        return;
       })
       .catch((err) => {
         console.log(err);
       });
+    return;
   }
 
-  Citizen.create({
-    id: citizenVM.id,
-    firstName: citizenVM.firstName,
-    lastName: citizenVM.lastName,
-    email: citizenVM.email,
-    status: citizenVM.status,
-  })
-    .then((result) => {
-      res.redirect("/citizen");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  Citizen.findOne({ where: { documentId: DocumentId } }).then((result) => {
+    if (result) {
+      hasError = true;
+      errorMessage = "Este ciudadano ya existe.";
+    }
+
+    console.log(errorMessage);
+
+    if (hasError) {
+      Citizen.findAll()
+        .then((result) => {
+          const citizen = result.map((result) => result.dataValues);
+
+          res.render("citizen/index", {
+            pageTitle: "Citizen",
+            module: "citizen",
+            hasCitizen: citizen.length > 0,
+            citizen: citizen,
+            hasError: hasError,
+            errorMessage: errorMessage,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      return;
+    }
+
+    Citizen.findOne({ where: { email: Email } })
+      .then((result) => {
+        if (result) {
+          hasError = true;
+          errorMessage = "Este correo ya existe.";
+        }
+
+        console.log(errorMessage);
+
+        if (hasError) {
+          Citizen.findAll()
+            .then((result) => {
+              const citizen = result.map((result) => result.dataValues);
+
+              res.render("citizen/index", {
+                pageTitle: "Citizen",
+                module: "citizen",
+                hasCitizen: citizen.length > 0,
+                citizen: citizen,
+                hasError: hasError,
+                errorMessage: errorMessage,
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+          return;
+        }
+
+        Citizen.create({
+          documentId: DocumentId,
+          firstName: FirstName,
+          lastName: LastName,
+          email: Email,
+          status: true,
+        })
+          .then((result) => {
+            res.redirect("/admin/citizen");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+  
 };
 
 exports.editCitizenPost = (req, res, next) => {
   let hasError = false;
   let errorMessage = "";
 
-  const citizenVM = {
-    id: req.body.Id,
-    firstName: req.body.FirstName,
-    lastName: req.body.LastName,
-    email: req.body.Email,
-    status: req.body.Status,
-  };
+  const { Id, DocumentId, FirstName, LastName, Email, Status } = req.body;
 
-  if (
-    (citizenVM.firstName == null ||
-      citizenVM.firstName == undefined ||
-      citizenVM.firstName == "") &&
-    !hasError
-  ) {
+  console.log(req.body);
+  if (!DocumentId || !FirstName || !LastName || !Email || !Status) {
     hasError = true;
-    errorMessage = "The first name field is required.";
+    errorMessage = "Todos los campos son obligatorios";
   }
 
-  if (
-    (citizenVM.lastName == null ||
-      citizenVM.lastName == undefined ||
-      citizenVM.lastName == "") &&
-    !hasError
-  ) {
-    hasError = true;
-    errorMessage = "The last name field is required.";
+  console.log(errorMessage);
+
+  if (hasError) {
+    Citizen.findAll()
+      .then((result) => {
+        const citizen = result.map((result) => result.dataValues);
+
+        res.render("citizen/index", {
+          pageTitle: "Citizen",
+          module: "citizen",
+          hasCitizen: citizen.length > 0,
+          citizen: citizen,
+          hasError: hasError,
+          errorMessage: errorMessage,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    return;
   }
 
-  if (
-    (citizenVM.email == null ||
-      citizenVM.email == undefined ||
-      citizenVM.email == "") &&
-    !hasError
-  ) {
-    hasError = true;
-    errorMessage = "The email field is required.";
-  }
-
-  Citizen.findOne({ where: { id: citizenVM.citizenId } })
+  Citizen.findOne({ where: { id: Id } })
     .then((result) => {
-      const citizenRequest = result.dataValues;
-
-      if (!citizenRequest && !hasError) {
-        hasError = true;
-        errorMessage = "Citizen not found.";
+      if (result) {
+        if(result.dataValues.documentId != DocumentId){
+            hasError = true;
+            errorMessage = "Este ciudadano ya existe.";
+        }        
       }
+      console.log(errorMessage);
 
-      if (!hasError) {
+      if (hasError) {
         Citizen.findAll()
           .then((result) => {
             const citizen = result.map((result) => result.dataValues);
 
-            res.render("citize/index", {
+            res.render("citizen/index", {
               pageTitle: "Citizen",
               module: "citizen",
               hasCitizen: citizen.length > 0,
@@ -171,31 +189,102 @@ exports.editCitizenPost = (req, res, next) => {
               hasError: hasError,
               errorMessage: errorMessage,
             });
-            return;
           })
           .catch((err) => {
             console.log(err);
           });
+        return;
       }
 
-      Citizen.update(
-        {
-          id: citizenVM.id,
-          firstName: citizenVM.firstName,
-          lastName: citizenVM.lastName,
-          email: citizenVM.email,
-          status: citizenVM.status,
-        },
-        {
-          where: { id: citizenVM.id },
-        }
-      )
+      Citizen.findOne({ where: { id: Id } })
         .then((result) => {
-          return res.redirect("/Citizen");
+          if (result) {
+
+            if(result.dataValues.email != Email ){
+                hasError = true;
+                errorMessage = "Este correo ya existe.";
+            }            
+          }
+
+          console.log(errorMessage);
+
+          if (hasError) {
+            Citizen.findAll()
+              .then((result) => {
+                const citizen = result.map((result) => result.dataValues);
+
+                res.render("citizen/index", {
+                  pageTitle: "Citizen",
+                  module: "citizen",
+                  hasCitizen: citizen.length > 0,
+                  citizen: citizen,
+                  hasError: hasError,
+                  errorMessage: errorMessage,
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+            return;
+          }
+          Citizen.findOne({ where: { id: Id } })
+            .then((result) => {
+
+              if (result == null) {
+                hasError = true;
+                errorMessage = "Este ciudadano no se ha encontrado";
+              }
+
+              console.log(errorMessage);
+
+              if (hasError) {
+                Citizen.findAll()
+                  .then((result) => {
+                    const citizen = result.map((result) => result.dataValues);
+
+                    res.render("citizen/index", {
+                      pageTitle: "Citizen",
+                      module: "citizen",
+                      hasCitizen: citizen.length > 0,
+                      citizen: citizen,
+                      hasError: hasError,
+                      errorMessage: errorMessage,
+                    });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+                return;
+              }
+              Citizen.update(
+                {
+                  documentId: DocumentId,
+                  firstName: FirstName,
+                  lastName: LastName,
+                  email: Email,
+                  status: Status,
+                },
+                {
+                  where: { id: Id },
+                }
+              )
+                .then((result) => {
+                  return res.redirect("/admin/Citizen");
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         })
         .catch((err) => {
           console.log(err);
         });
+    })
+    .catch((err) => {
+      console.log(err);
     })
     .catch((err) => {
       console.log(err);
@@ -222,13 +311,13 @@ exports.changeStatusCitizen = (req, res, next) => {
               hasError: true,
               errorMessage: "Citizen not found.",
             });
-            return;
           })
           .catch((err) => {
             console.log(err);
           });
+          return;
       }
-      citizenVM.status = citizenVM.status ? false : true;
+      citizenVM.status = !citizenVM.status ;
       Citizen.update(
         {
           firstName: citizenVM.firstName,
@@ -240,7 +329,7 @@ exports.changeStatusCitizen = (req, res, next) => {
         { where: { id: citizenVM.id } }
       )
         .then((result) => {
-          return res.redirect("/Citizen");
+          return res.redirect("/admin/Citizen");
         })
         .catch((err) => {
           console.log(err);

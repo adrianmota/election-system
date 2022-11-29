@@ -29,8 +29,8 @@
                     <div class="modal-body">
                         <section>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="id" name="Id" placeholder="id">
-                                <label for="id" class="col-form-label">Documento de Identidad</label>
+                                <input type="text" class="form-control" id="documentId" name="DocumentId" placeholder="documentId">
+                                <label for="documentId" class="col-form-label">Documento de Identidad</label>
                             </div>
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" id="firstname" name="FirstName"
@@ -75,33 +75,33 @@
             <tbody>
                 {{#each citizen as |citizen|}}
                 <tr>
-                    <td>{{citizen.id}}</td>
+                    <td>{{citizen.documentId}}</td>
                     <td>{{citizen.firstName}}</td>
                     <td>{{citizen.lastName}}</td>
                     <td>{{citizen.email}}</td>
 
                     {{#if citizen.status}}
                         <td>
-                            <button class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#status-{{citizen.firstName}}">Desactivar</button>
+                            <button class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#status-{{citizen.id}}">Desactivar</button>
                         </td>
 
                         {{else}}
 
                         <td>
-                            <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#status-{{citizen.firstName}}">Activar</button>
+                            <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#status-{{citizen.id}}">Activar</button>
                         </td>
 
                     {{/if}}
 
                     <td class="d-flex gap-2">
-                        <button type="button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#edit-{{citizen.firstName}}">
+                        <button type="button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#edit-{{citizen.id}}">
                             Editar
                         </button>
                     </td>
                 </tr>
 
                 {{!-- Edit Modal --}}
-                <div class="modal fade" id="edit-{{citizen.firstName}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="edit-{{citizen.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -111,10 +111,12 @@
                             <form method="POST" action="/admin/editCitizen">
                                 <div class="modal-body">
                                     <section>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="id" name="Id" 
+                                        <input hidden type="text" class="form-control" id="id" name="Id" 
                                                 placeholder="id" value="{{citizen.id}}">
-                                            <label for="id" class="col-form-label">Documento de Identidad</label>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="documentId" name="DocumentId" 
+                                                placeholder="documentId" value="{{citizen.documentId}}">
+                                            <label for="documentId" class="col-form-label">Documento de Identidad</label>
                                         </div>
                                         <div class="form-floating mb-3">
                                             <input type="text" class="form-control" id="firstname" name="FirstName"
@@ -130,6 +132,8 @@
                                             <input type="email" class="form-control" id="email" name="Email" placeholder="email" value="{{citizen.email}}">
                                             <label for="email" class="col-form-label">Email</label>
                                         </div>
+                                        <input hidden type="text" class="form-control" id="status" name="Status" 
+                                                placeholder="status" value="{{citizen.status}}">
                                     </section>
                                 </div>
                                 <div class="modal-footer">
@@ -143,7 +147,7 @@
                 {{!-- Edit Modal --}}
 
                 <!-- Status Modal -->
-                <div class="modal fade" id="status-{{citizen.firstName}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="status-{{citizen.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">

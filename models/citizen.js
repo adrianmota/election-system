@@ -4,6 +4,12 @@ const sequelize = require("../context/appContext");
 
 const Citizen = sequelize.define("Citizen", {
   id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  },
+  documentId: {
     type: Sequelize.STRING(13),
     allowNull: false,
     primaryKey: true,
