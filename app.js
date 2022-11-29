@@ -23,14 +23,16 @@ const port = 5000;
 const app = express();
 
 app.use("/img", express.static(path.join(__dirname, "img")));
+
 app.use(express.urlencoded({ extended: false }));
+
 
 const imageStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "img/politic");
+    cb(null, 'img/politics');
   },
   filename: (req, file, cb) => {
-    cb(null, `${uuidv4()}`);
+    cb(null, `${uuidv4()}-${file.originalname}`);
   },
 });
 
@@ -55,7 +57,7 @@ app.use("/admin", electivePositionRoute);
 app.use("/", errorController.get404);
 
 sequelize
-  .sync(/*{ force: true }*/)
+  .sync()
   .then((result) =>
     app.listen(port, hostname, () =>
       console.log(`App running at http://${hostname}:${port}/`)
