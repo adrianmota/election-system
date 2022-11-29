@@ -22,6 +22,20 @@ const port = 5000;
 
 const app = express();
 
+app.use("/img", express.static(path.join(__dirname, "img")));
+app.use(express.urlencoded({ extended: false }));
+
+const imageStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "img/politic");
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${uuidv4()}`);
+  },
+});
+
+app.use(multer({ storage: imageStorage }).single("LogoImg"));
+
 // View Engine Config
 app.engine(
   "hbs",
@@ -35,29 +49,16 @@ app.set("view engine", "hbs");
 app.set("views", "views");
 
 // Middlewares
-app.use("/img",express.static(path.join(__dirname, "img")));
-
-app.use(express.urlencoded({ extended: false }));
-
-const imageStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-      cb(null, "img/politic");
-  },
-  filename: (req, file, cb) => {
-      cb(null, `${uuidv4()}`);
-  },
-});
-
-app.use(multer({ storage: imageStorage }).single("Image"));
-
 app.use("/admin", citizenRoute);
 app.use("/admin", politicRoute);
 app.use("/admin", electivePositionRoute);
 app.use("/", errorController.get404);
 
 sequelize
-  .sync()
+  .sync(/*{ force: true }*/)
   .then((result) =>
-    app.listen(port, hostname, () => console.log(`App running at http://${hostname}:${port}/`))
+    app.listen(port, hostname, () =>
+      console.log(`App running at http://${hostname}:${port}/`)
+    )
   )
   .catch((err) => console.error(err));
