@@ -1,6 +1,7 @@
 const express = require("express");
 const { engine } = require("express-handlebars");
 const sequelize = require("./context/appContext");
+const path = require("path");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 
