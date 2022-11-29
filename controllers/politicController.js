@@ -23,7 +23,7 @@ exports.postCreatePolitic = (req, res, next) => {
 
     if (!name || !description || !imageFile) {
         hasError = true;
-        errorMessage = 'You must fill all the fields before sending the information';
+        errorMessage = 'Debes rellenar todos los campos antes de enviar la información';
     }
 
     if (hasError) {
@@ -59,7 +59,7 @@ exports.postEditPolitic = (req, res, next) => {
 
     if (!name || !description) {
         hasError = true;
-        errorMessage = 'You must fill all the fields before sending the information';
+        errorMessage = 'Debes rellenar todos los campos antes de enviar la información';
     }
 
     if (hasError) {
