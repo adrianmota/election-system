@@ -166,10 +166,10 @@ exports.editCitizenPost = (req, res, next) => {
     return;
   }
 
-  Citizen.findOne({ where: { id: Id } })
+  Citizen.findOne({ where: { documentId: DocumentId } })
     .then((result) => {
       if (result) {
-        if(result.dataValues.documentId != DocumentId){
+        if(result.dataValues.id != Id){
             hasError = true;
             errorMessage = "Este ciudadano ya existe.";
         }        
@@ -196,11 +196,10 @@ exports.editCitizenPost = (req, res, next) => {
         return;
       }
 
-      Citizen.findOne({ where: { id: Id } })
+      Citizen.findOne({ where: { email: Email } })
         .then((result) => {
           if (result) {
-
-            if(result.dataValues.email != Email ){
+            if(result.dataValues.id != Id ){
                 hasError = true;
                 errorMessage = "Este correo ya existe.";
             }            
@@ -292,7 +291,7 @@ exports.editCitizenPost = (req, res, next) => {
 };
 
 exports.changeStatusCitizen = (req, res, next) => {
-  const citizenId = req.params.idCitizen;
+  const citizenId = req.params.idCitizen
 
   Citizen.findOne({ where: { id: citizenId } })
     .then((result) => {
@@ -309,7 +308,7 @@ exports.changeStatusCitizen = (req, res, next) => {
               hasCitizen: citizen.length > 0,
               citizen: citizen,
               hasError: true,
-              errorMessage: "Citizen not found.",
+              errorMessage: "Ciudadano no encontrado.",
             });
           })
           .catch((err) => {
