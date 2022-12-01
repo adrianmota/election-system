@@ -7,6 +7,7 @@ exports.getIndex = (req, res, next) => {
       res.render("electivePosition/index", {
         title: "Puestos Electivos",
         electivePositions,
+        hasElectivePositions: electivePositions.length > 0,
         hasError: false,
         errorMessage: "",
       });
@@ -19,7 +20,7 @@ exports.postCreateElectivePosition = (req, res, next) => {
   let errorMessage = "";
   const electivePosition = {
     name: req.body.Name,
-    description: res.body.Description,
+    description: req.body.Description,
     state: true,
   };
 
@@ -58,7 +59,7 @@ exports.postEditElectivePosition = (req, res, next) => {
 
   const electivePosition = {
     name: req.body.Name,
-    description: res.body.Description,
+    description: req.body.Description,
     state: true,
   };
 
@@ -93,7 +94,7 @@ exports.postEditElectivePosition = (req, res, next) => {
 };
 
 exports.postChangeElectivePositionStatus = (req, res, next) => {
-  const { id } = req.body;
+  const { id } = req.params.electivePositionId;
 
   ElectivePosition.findOne({ where: { id } }).then((result) => {
     const electivePosition = result.dataValues;
