@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 
 const sequelize = require("../context/appContext");
 
-const electivePosition = sequelize.define("electivePosition", {
+const ElectivePosition = sequelize.define("ElectivePosition", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -17,6 +17,10 @@ const electivePosition = sequelize.define("electivePosition", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  status: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: true,
+  },
 });
 
-module.exports = electivePosition;
+module.exports = ElectivePosition;

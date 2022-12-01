@@ -22,6 +22,8 @@ exports.postCreatePolitic = (req, res, next) => {
   const politic = { name: Name, description: Description, logoImg: "" };
   const imageFile = req.file;
 
+  console.log(req.file);
+
   if (!Name || !Description || !imageFile) {
     hasError = true;
     errorMessage =
@@ -32,7 +34,7 @@ exports.postCreatePolitic = (req, res, next) => {
     Politic.findAll()
       .then((result) => {
         const politics = result.map((result) => result.dataValues);
-        res.render("admin/index", {
+        res.render("politic/index", {
           title: "Partidos",
           politics,
           hasError,
@@ -43,11 +45,11 @@ exports.postCreatePolitic = (req, res, next) => {
     return;
   }
 
-  politic.logoImg = imageFile.path;
+  politic.logoImg = `/${imageFile.path}`;
   Politic.create(politic)
     .then((result) => {
       console.log(result);
-      res.status(302).redirect("/politics");
+      res.status(302).redirect("/admin/politics");
     })
     .catch((err) => console.error(err));
 };
@@ -70,7 +72,7 @@ exports.postEditPolitic = (req, res, next) => {
     Politic.findAll()
       .then((result) => {
         const politics = result.map((result) => result.dataValues);
-        res.render("admin/index", {
+        res.render("politic/index", {
           title: "Partidos",
           politics,
           hasError,
@@ -84,7 +86,7 @@ exports.postEditPolitic = (req, res, next) => {
   Politic.findOne({ where: { Id } })
     .then((result) => {
       const oldPolitic = result.dataValues;
-      politic.logoImg = !imageFile ? oldPolitic.logoImg : imageFile.path;
+      politic.logoImg = !imageFile ? oldPolitic.logoImg : `/${imageFile.path}`;
       Politic.update(
         {
           name: politic.name,
@@ -93,19 +95,19 @@ exports.postEditPolitic = (req, res, next) => {
         },
         { where: { Id } }
       )
-        .then((result) => res.status(302).redirect("/politics"))
+        .then((result) => res.status(302).redirect("/admin/politics"))
         .catch((err) => console.error(err));
     })
     .catch((err) => console.error(err));
 };
 
-exports.postDeletePolitic = (req, res, next) => {
+exports.postChangePoliticStatus = (req, res, next) => {
   const { Id } = req.body;
 
   Politic.findOne({ where: { Id } })
     .then((result) => {
       const politic = result.dataValues;
-      politic.status = false;
+      politic.status = !politic.status;
       Politic.update(
         {
           name: politic.name,
@@ -115,7 +117,7 @@ exports.postDeletePolitic = (req, res, next) => {
         },
         { where: { Id } }
       )
-        .then((result) => res.status(302).redirect("/politics"))
+        .then((result) => res.status(302).redirect("/admin/politics"))
         .catch((err) => console.error(err));
     })
     .catch((err) => console.error(err));

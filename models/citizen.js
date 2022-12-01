@@ -12,7 +12,7 @@ const Citizen = sequelize.define("Citizen", {
   documentId: {
     type: Sequelize.STRING(13),
     allowNull: false,
-    primaryKey: true,
+    unique: true,
   },
   firstName: {
     type: Sequelize.STRING,
