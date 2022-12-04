@@ -48,7 +48,7 @@ exports.postCreateElectivePosition = (req, res, next) => {
   ElectivePosition.create(electivePosition)
     .then((result) => {
       console.log(result);
-      res.status(302).redirect("/electivePositions");
+      res.status(302).redirect("/admin/electivePositions");
     })
     .catch((err) => console.error(err));
 };
@@ -88,13 +88,13 @@ exports.postEditElectivePosition = (req, res, next) => {
     where: { id: req.body.Id },
   })
     .then((result) => {
-      res.status(302).redirect("/electivePositions");
+      res.status(302).redirect("/admin/electivePositions");
     })
     .catch((err) => console.error(err));
 };
 
 exports.postChangeElectivePositionStatus = (req, res, next) => {
-  const { id } = req.params.electivePositionId;
+  const id  = req.params.electivePositionId;
 
   ElectivePosition.findOne({ where: { id } }).then((result) => {
     const electivePosition = result.dataValues;
@@ -109,7 +109,7 @@ exports.postChangeElectivePositionStatus = (req, res, next) => {
       { where: { id } }
     )
       .then((result) => {
-        res.status(302).redirect("/electivePositions");
+        res.status(302).redirect("/admin/electivePositions");
       })
       .catch((err) => console.error(err));
   });
