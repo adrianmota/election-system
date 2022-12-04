@@ -18,11 +18,14 @@ exports.postCreatePolitic = (req, res, next) => {
   let hasError = false;
   let errorMessage = "";
 
-  const { Name, Description } = req.body;
-  const politic = { name: Name, description: Description, logoImg: "" };
   const imageFile = req.file;
+  const politic = {
+    name: req.body.name,
+    description: req.body.description,
+    logoImg: "",
+  };
 
-  if (!Name || !Description || !imageFile) {
+  if (!politic.name || !politic.description || !imageFile) {
     hasError = true;
     errorMessage =
       "Debes rellenar todos los campos antes de enviar la información";
@@ -56,12 +59,15 @@ exports.postEditPolitic = (req, res, next) => {
   let hasError = false;
   let errorMessage = "";
 
-  const { Name, Description } = req.body;
   const { id } = req.params;
-  const politic = { id, name: Name, description: Description, logoImg: "" };
   const imageFile = req.file;
+  const politic = {
+    name: req.body.name,
+    description: req.body.description,
+    logoImg: "",
+  };
 
-  if (!Name || !Description) {
+  if (!politic.name || !politic.description) {
     hasError = true;
     errorMessage =
       "Debes rellenar todos los campos antes de enviar la información";

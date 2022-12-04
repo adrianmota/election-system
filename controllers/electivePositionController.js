@@ -18,9 +18,10 @@ exports.getIndex = (req, res, next) => {
 exports.postCreateElectivePosition = (req, res, next) => {
   let hasError = false;
   let errorMessage = "";
+
   const electivePosition = {
-    name: req.body.Name,
-    description: req.body.Description,
+    name: req.body.name,
+    description: req.body.description,
     state: true,
   };
 
@@ -53,11 +54,11 @@ exports.postCreateElectivePosition = (req, res, next) => {
 exports.postEditElectivePosition = (req, res, next) => {
   let hasError = false;
   let errorMessage = "";
+  
   const { id } = req.params;
-
   const electivePosition = {
-    name: req.body.Name,
-    description: req.body.Description,
+    name: req.body.name,
+    description: req.body.description,
     state: true,
   };
 

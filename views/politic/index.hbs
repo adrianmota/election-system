@@ -29,17 +29,17 @@
                         <section>
                             <div class="form-group d-flex flex-column gap-2">
                                 <label for="LogoImg">Logo del Partido</label>
-                                <input type="file" id="LogoImg" class="form-control" name="LogoImg" placeholder="LogoImg"
+                                <input type="file" id="LogoImg" class="form-control" name="logoImg" placeholder="LogoImg"
                                     required />
                             </div>
                             <div class="form-floating my-3">
-                                <input type="text" class="form-control" id="Name" name="Name"
+                                <input type="text" class="form-control" id="Name" name="name"
                                     placeholder="Name">
                                 <label for="Name" class="col-form-label">Nombre del Partido</label>
                             </div>
                             <div class="form-group d-flex flex-column gap-2">
                                 <label for="Description">Descripción</label>
-                                <textarea class="form-control" name="Description" rows="5" placeholder="..."
+                                <textarea class="form-control" name="description" rows="5" placeholder="..."
                                     id="Description"></textarea>
                             </div>
                         </section>
@@ -121,17 +121,17 @@
                         <section>
                             <div class="form-group d-flex flex-column gap-2 mb-3">
                                 <label for="LogoImg">Image</label>
-                                <input type="file" id="LogoImg" class="form-control" name="LogoImg" placeholder="LogoImg"
+                                <input type="file" id="LogoImg" class="form-control" name="logoImg" placeholder="LogoImg"
                                     value="{{politic.logoImg}}"/>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="Name" name="Name" 
+                                <input type="text" class="form-control" id="Name" name="name" 
                                     placeholder="Name" value="{{politic.name}}">
                                 <label for="Name" class="col-form-label">Nombre del Partido</label>
                             </div>
                             <div class="form-group d-flex flex-column gap-2">
                                 <label for="Description">Description</label>
-                                <textarea class="form-control" name="Description" rows="5" placeholder="Description"
+                                <textarea class="form-control" name="description" rows="5" placeholder="Description"
                                     id="Description">{{politic.description}}</textarea>
                             </div>
                         </section>
