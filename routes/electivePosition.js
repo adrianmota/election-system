@@ -12,7 +12,7 @@ router.post(
   electivePositionController.postEditElectivePosition
 );
 router.post(
-  "/changeElectivePositionStatus",
+  "/changeElectivePositionStatus/:electivePositionId",
   electivePositionController.postChangeElectivePositionStatus
 );
 
