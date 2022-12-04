@@ -22,8 +22,6 @@ exports.postCreatePolitic = (req, res, next) => {
   const politic = { name: Name, description: Description, logoImg: "" };
   const imageFile = req.file;
 
-  console.log(req.file);
-
   if (!Name || !Description || !imageFile) {
     hasError = true;
     errorMessage =
