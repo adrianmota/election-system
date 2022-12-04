@@ -103,11 +103,9 @@
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Posición Electiva</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form method="POST" action="/admin/editElectivePosition">
+                    <form method="POST" action="/admin/editElectivePosition/{{electivePosition.id}}">
                         <div class="modal-body">
                             <section>
-                                <input hidden type="text" class="form-control" id="id" name="Id" 
-                                        placeholder="id" value="{{electivePosition.id}}">
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="Name" name="Name" placeholder="Name" value="{{electivePosition.name}}">
                                     <label for="Name" class="col-form-label">Nombre del Partido</label>

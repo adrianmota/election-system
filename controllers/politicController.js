@@ -58,8 +58,9 @@ exports.postEditPolitic = (req, res, next) => {
   let hasError = false;
   let errorMessage = "";
 
-  const { Id, Name, Description } = req.body;
-  const politic = { id: Id, name: Name, description: Description, logoImg: "" };
+  const { Name, Description } = req.body;
+  const { id } = req.params;
+  const politic = { id, name: Name, description: Description, logoImg: "" };
   const imageFile = req.file;
 
   if (!Name || !Description) {
@@ -83,7 +84,7 @@ exports.postEditPolitic = (req, res, next) => {
     return;
   }
 
-  Politic.findOne({ where: { Id } })
+  Politic.findOne({ where: { id } })
     .then((result) => {
       const oldPolitic = result.dataValues;
       politic.logoImg = !imageFile ? oldPolitic.logoImg : `/${imageFile.path}`;
@@ -93,7 +94,7 @@ exports.postEditPolitic = (req, res, next) => {
           description: politic.description,
           logoImg: politic.logoImg,
         },
-        { where: { Id } }
+        { where: { id } }
       )
         .then((result) => res.status(302).redirect("/admin/politics"))
         .catch((err) => console.error(err));
@@ -102,9 +103,9 @@ exports.postEditPolitic = (req, res, next) => {
 };
 
 exports.postChangePoliticStatus = (req, res, next) => {
-  const { Id } = req.body;
+  const { id } = req.params;
 
-  Politic.findOne({ where: { Id } })
+  Politic.findOne({ where: { id } })
     .then((result) => {
       const politic = result.dataValues;
       politic.status = !politic.status;
@@ -115,7 +116,7 @@ exports.postChangePoliticStatus = (req, res, next) => {
           logoImg: politic.logoImg,
           status: politic.status,
         },
-        { where: { Id } }
+        { where: { id } }
       )
         .then((result) => res.status(302).redirect("/admin/politics"))
         .catch((err) => console.error(err));

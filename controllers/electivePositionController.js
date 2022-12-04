@@ -46,16 +46,14 @@ exports.postCreateElectivePosition = (req, res, next) => {
   }
 
   ElectivePosition.create(electivePosition)
-    .then((result) => {
-      console.log(result);
-      res.status(302).redirect("/electivePositions");
-    })
+    .then((result) => res.status(302).redirect("/admin/electivePositions"))
     .catch((err) => console.error(err));
 };
 
 exports.postEditElectivePosition = (req, res, next) => {
   let hasError = false;
   let errorMessage = "";
+  const { id } = req.params;
 
   const electivePosition = {
     name: req.body.Name,
@@ -85,16 +83,14 @@ exports.postEditElectivePosition = (req, res, next) => {
   }
 
   ElectivePosition.update(electivePosition, {
-    where: { id: req.body.Id },
+    where: { id },
   })
-    .then((result) => {
-      res.status(302).redirect("/electivePositions");
-    })
+    .then((result) => res.status(302).redirect("/admin/electivePositions"))
     .catch((err) => console.error(err));
 };
 
 exports.postChangeElectivePositionStatus = (req, res, next) => {
-  const { id } = req.params.electivePositionId;
+  const { id } = req.params;
 
   ElectivePosition.findOne({ where: { id } }).then((result) => {
     const electivePosition = result.dataValues;
@@ -108,9 +104,7 @@ exports.postChangeElectivePositionStatus = (req, res, next) => {
       },
       { where: { id } }
     )
-      .then((result) => {
-        res.status(302).redirect("/electivePositions");
-      })
+      .then((result) => res.status(302).redirect("/admin/electivePositions"))
       .catch((err) => console.error(err));
   });
 };

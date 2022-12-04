@@ -8,11 +8,11 @@ router.post(
   electivePositionController.postCreateElectivePosition
 );
 router.post(
-  "/editElectivePosition",
+  "/editElectivePosition/:id",
   electivePositionController.postEditElectivePosition
 );
 router.post(
-  "/changeElectivePositionStatus/:electivePositionId",
+  "/changeElectivePositionStatus/:id",
   electivePositionController.postChangeElectivePositionStatus
 );
 

@@ -115,7 +115,7 @@
                     </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form enctype="multipart/form-data" method="POST" action="/admin/editPolitic">
+                <form enctype="multipart/form-data" method="POST" action="/admin/editPolitic/{{politic.id}}">
                     <div class="modal-body">
                         <section>
                             <div class="form-group d-flex flex-column gap-2 mb-3">
@@ -160,7 +160,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <form method="POST" action="/admin/changePoliticStatus">
+                    <form method="POST" action="/admin/changePoliticStatus/{{politic.id}}">
                         {{#if politic.status}}
                         <button type="submit" class="btn btn-danger">
                             Desactivar
@@ -170,8 +170,6 @@
                             Activar
                         </button>
                         {{/if}}
-
-                        <input type="hidden" name="Id" value="{{politic.id}}">
                     </form>
                 </div>
             </div>
