@@ -39,7 +39,7 @@ const imageStorage = multer.diskStorage({
   },
 });
 
-app.use(multer({ storage: imageStorage }).single("LogoImg"));
+app.use(multer({ storage: imageStorage }).single("logoImg"));
 
 // View Engine Config
 app.engine(
