@@ -11,11 +11,13 @@ const errorController = require("./controllers/errorController");
 const citizenRoute = require("./routes/citizen");
 const electivePositionRoute = require("./routes/electivePosition");
 const politicRoute = require("./routes/politic");
+const candidateRoute = require("./routes/candidate");
 
 //Models
 const citizen = require("./models/citizen");
 const electivePosition = require("./models/electivePosition");
 const politic = require("./models/politic");
+const candidate = require("./models/candidate");
 
 const hostname = "127.0.0.1";
 const port = 5000;
@@ -55,10 +57,20 @@ app.set("views", "views");
 app.use("/admin", citizenRoute);
 app.use("/admin", politicRoute);
 app.use("/admin", electivePositionRoute);
+app.use("/admin", candidateRoute);
 app.use("/", errorController.get404);
 
+
+//relataionship
+
+candidate.belongsTo(politic, { constraint: true, onDelete: "RESTRICT" });
+politic.hasMany(candidate);
+
+candidate.belongsTo(electivePosition, { constraint: true, onDelete: "RESTRICT" });
+electivePosition.hasMany(candidate);
+
 sequelize
-  .sync()
+  .sync({force:true})
   .then((result) =>
     app.listen(port, hostname, () =>
       console.log(`App running at http://${hostname}:${port}/`)
