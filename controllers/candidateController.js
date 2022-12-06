@@ -23,9 +23,11 @@ exports.getIndex = (req, res, next) => {
                 pageTitle: "Candidate",
                 module: "candidate",
                 hasCandidate: candidate.length > 0,
-                candidate: candidate,
+                candidate: candidate,                      
                 politic: politic,
+                hasPolitic: politic.length > 0,
                 electivePosition: electivePosition,
+                hasElectivePosition: electivePosition.length > 0,
                 hasError: hasError,
                 errorMessage: errorMessage,
               });
@@ -92,9 +94,11 @@ exports.createCandidatePost = (req, res, next) => {
                   pageTitle: "Candidate",
                   module: "candidate",
                   hasCandidate: candidate.length > 0,
-                  candidate: candidate,
+                  candidate: candidate,                      
                   politic: politic,
+                  hasPolitic: politic.length > 0,
                   electivePosition: electivePosition,
+                  hasElectivePosition: electivePosition.length > 0, 
                   hasError: hasError,
                   errorMessage: errorMessage,
                 });
@@ -142,9 +146,11 @@ exports.createCandidatePost = (req, res, next) => {
                     pageTitle: "Candidate",
                     module: "candidate",
                     hasCandidate: candidate.length > 0,
-                    candidate: candidate,
+                    candidate: candidate,                      
                     politic: politic,
+                    hasPolitic: politic.length > 0,
                     electivePosition: electivePosition,
+                    hasElectivePosition: electivePosition.length > 0,
                     hasError: hasError,
                     errorMessage: errorMessage,
                   });
@@ -163,7 +169,7 @@ exports.createCandidatePost = (req, res, next) => {
       return;
     }
 
-    electivePosition.findOne({ where: { id: electivePositionId } })
+    ElectivePosition.findOne({ where: { id: electivePositionId } })
       .then((result) => {
         if (!result.dataValues.status) {
           hasError = true;
@@ -193,9 +199,11 @@ exports.createCandidatePost = (req, res, next) => {
                         pageTitle: "Candidate",
                         module: "candidate",
                         hasCandidate: candidate.length > 0,
-                        candidate: candidate,
+                        candidate: candidate,                      
                         politic: politic,
+                        hasPolitic: politic.length > 0,
                         electivePosition: electivePosition,
+                        hasElectivePosition: electivePosition.length > 0,
                         hasError: hasError,
                         errorMessage: errorMessage,
                       });
@@ -281,9 +289,11 @@ exports.editCandidatePost = (req, res, next) => {
                   pageTitle: "Candidate",
                   module: "candidate",
                   hasCandidate: candidate.length > 0,
-                  candidate: candidate,
+                  candidate: candidate,                      
                   politic: politic,
+                  hasPolitic: politic.length > 0,
                   electivePosition: electivePosition,
+                  hasElectivePosition: electivePosition.length > 0,
                   hasError: hasError,
                   errorMessage: errorMessage,
                 });
@@ -330,9 +340,11 @@ exports.editCandidatePost = (req, res, next) => {
                       pageTitle: "Candidate",
                       module: "candidate",
                       hasCandidate: candidate.length > 0,
-                      candidate: candidate,
+                      candidate: candidate,                      
                       politic: politic,
+                      hasPolitic: politic.length > 0,
                       electivePosition: electivePosition,
+                      hasElectivePosition: electivePosition.length > 0,
                       hasError: hasError,
                       errorMessage: errorMessage,
                     });
@@ -378,9 +390,11 @@ exports.editCandidatePost = (req, res, next) => {
                           pageTitle: "Candidate",
                           module: "candidate",
                           hasCandidate: candidate.length > 0,
-                          candidate: candidate,
+                          candidate: candidate,                      
                           politic: politic,
+                          hasPolitic: politic.length > 0,
                           electivePosition: electivePosition,
+                          hasElectivePosition: electivePosition.length > 0,
                           hasError: hasError,
                           errorMessage: errorMessage,
                         });
@@ -426,9 +440,11 @@ exports.editCandidatePost = (req, res, next) => {
                               pageTitle: "Candidate",
                               module: "candidate",
                               hasCandidate: candidate.length > 0,
-                              candidate: candidate,
+                              candidate: candidate,                      
                               politic: politic,
+                              hasPolitic: politic.length > 0,
                               electivePosition: electivePosition,
+                              hasElectivePosition: electivePosition.length > 0,
                               hasError: hasError,
                               errorMessage: errorMessage,
                             });
@@ -503,9 +519,11 @@ exports.changeStatusCandidate = (req, res, next) => {
                       pageTitle: "Candidate",
                       module: "candidate",
                       hasCandidate: candidate.length > 0,
-                      candidate: candidate,
+                      candidate: candidate,                      
                       politic: politic,
+                      hasPolitic: politic.length > 0,
                       electivePosition: electivePosition,
+                      hasElectivePosition: electivePosition.length > 0,
                       hasError: hasError,
                       errorMessage: errorMessage,
                     });
