@@ -1,195 +1,350 @@
 <div class="row">
-    <div class="col-12 mx-auto my-5">    
-        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#save">
-            Crear nuevo ciudadano
-        </button>
+  <div class="col-12 mx-auto my-5">
+    <button
+      type="button"
+      class="btn btn-primary w-100"
+      data-bs-toggle="modal"
+      data-bs-target="#save"
+    >
+      Crear nuevo ciudadano
+    </button>
+  </div>
+
+  {{#if hasError}}
+    <div class="col-6 mx-auto my-5">
+      <div class="alert alert-danger text-center" role="alert">
+        <strong>Error:</strong>
+        {{errorMessage}}
+        <br />
+        <a href="/admin/citizen" class="btn btn-sm btn-primary">ver ciudadanos</a>
+      </div>
     </div>
+  {{/if}}
 
-    {{#if hasError}}
-        <div class="col-6 mx-auto my-5">
-            <div class="alert alert-danger text-center" role="alert">
-               <strong>Error:</strong> {{errorMessage}}
-               <br>
-                <a href="/admin/citizen" class="btn btn-sm btn-primary">ver ciudadanos</a>
-            </div>
+  {{! Create Modal }}
+  <div
+    class="modal fade"
+    id="save"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">
+            Crear Nuevo Ciudadano</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </div>
-    {{/if}}
+        <form method="POST" action="/admin/createCitizen">
+          <div class="modal-body">
+            <section>
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="documentIdCreate"
+                  name="documentId"
+                  placeholder="000-0000000-0"
+                />
+                <label for="documentIdCreate" class="col-form-label">Documento
+                  de Identidad</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="firstNameCreate"
+                  name="firstName"
+                  placeholder="Nombre"
+                />
+                <label
+                  for="firstNameCreate"
+                  class="col-form-label"
+                >Nombre</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lastNameCreate"
+                  name="lastName"
+                  placeholder="Apellido"
+                />
+                <label
+                  for="lastNameCreate"
+                  class="col-form-label"
+                >Apellido</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="email"
+                  class="form-control"
+                  id="emailCreate"
+                  name="email"
+                  placeholder="Email"
+                />
+                <label for="emailCreate" class="col-form-label">Email</label>
+              </div>
+            </section>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >Cerrar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {{! Create Modal }}
 
-    {{!-- Create Modal --}}
-    <div class="modal fade" id="save" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">
-                        Crear Nuevo Ciudadano</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="POST" action="/admin/createCitizen">
+  {{#if hasCitizen}}
+    <section class="col-12 mx-auto">
+      <table class="table table-responsive table-striped">
+        <thead class="bg-dark text-white">
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Apellido</th>
+            <th scope="col">Email</th>
+            <th scope="col" class="text-center">Estado</th>
+            <th scope="col" class="text-center">Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each citizen as |citizen|}}
+            <tr>
+              <td>{{citizen.documentId}}</td>
+              <td>{{citizen.firstName}}</td>
+              <td>{{citizen.lastName}}</td>
+              <td>{{citizen.email}}</td>
+
+              {{#if citizen.status}}
+                <td>
+                  <button
+                    class="btn btn-danger w-100"
+                    data-bs-toggle="modal"
+                    data-bs-target="#status-{{citizen.id}}"
+                  >Desactivar</button>
+                </td>
+
+              {{else}}
+
+                <td>
+                  <button
+                    class="btn btn-success w-100"
+                    data-bs-toggle="modal"
+                    data-bs-target="#status-{{citizen.id}}"
+                  >Activar</button>
+                </td>
+
+              {{/if}}
+
+              <td class="d-flex gap-2">
+                <button
+                  type="button"
+                  class="btn btn-secondary w-100"
+                  data-bs-toggle="modal"
+                  data-bs-target="#edit-{{citizen.id}}"
+                >
+                  Editar
+                </button>
+              </td>
+            </tr>
+
+            {{! Edit Modal }}
+            <div
+              class="modal fade"
+              id="edit-{{citizen.id}}"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Editar
+                      Ciudadano</h1>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <form method="POST" action="/admin/editCitizen">
                     <div class="modal-body">
-                        <section>
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="documentId" name="DocumentId" placeholder="documentId">
-                                <label for="documentId" class="col-form-label">Documento de Identidad</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="firstname" name="FirstName"
-                                    placeholder="firstname">
-                                <label for="firstname" class="col-form-label">Nombre</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="lastname" name="LastName"
-                                    placeholder="lastname">
-                                <label for="lastname" class="col-form-label">Apellido</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="email" name="Email" placeholder="email">
-                                <label for="email" class="col-form-label">Email</label>
-                            </div>
-                        </section>
+                      <section>
+                        <input
+                          hidden
+                          type="text"
+                          class="form-control"
+                          id="id"
+                          name="id"
+                          placeholder="id"
+                          value="{{citizen.id}}"
+                        />
+                        <div class="form-floating mb-3">
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="documentIdEdit"
+                            name="documentId"
+                            placeholder="documentId"
+                            value="{{citizen.documentId}}"
+                          />
+                          <label
+                            for="documentIdEdit"
+                            class="col-form-label"
+                          >Documento de Identidad</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="firstNameEdit"
+                            name="firstName"
+                            placeholder="Nombre"
+                            value="{{citizen.firstName}}"
+                          />
+                          <label
+                            for="firstNameEdit"
+                            class="col-form-label"
+                          >Nombre</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="lastNameEdit"
+                            name="lastName"
+                            placeholder="Apellido"
+                            value="{{citizen.lastName}}"
+                          />
+                          <label
+                            for="lastNameEdit"
+                            class="col-form-label"
+                          >Apellido</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                          <input
+                            type="email"
+                            class="form-control"
+                            id="emailEdit"
+                            name="email"
+                            placeholder="Email"
+                            value="{{citizen.email}}"
+                          />
+                          <label
+                            for="emailEdit"
+                            class="col-form-label"
+                          >Email</label>
+                        </div>
+                        <input
+                          type="hidden"
+                          class="form-control"
+                          id="status"
+                          name="status"
+                          value="{{citizen.status}}"
+                        />
+                      </section>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >Cerrar</button>
+                      <button
+                        type="submit"
+                        class="btn btn-primary"
+                      >Guardar</button>
                     </div>
-                </form>
+                  </form>
+                </div>
+              </div>
             </div>
-        </div>
-    </div>
-    {{!-- Create Modal --}}
-    
+            {{! Edit Modal }}
 
-    {{#if hasCitizen}}
-    <section class="col-12 mx-auto">
-        <table class="table table-responsive table-striped">
-            <thead class="bg-dark text-white">
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Apellido</th>
-                    <th scope="col">Email</th>
-                    <th scope="col" class="text-center">Estado</th>
-                    <th scope="col" class="text-center">Opciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each citizen as |citizen|}}
-                <tr>
-                    <td>{{citizen.documentId}}</td>
-                    <td>{{citizen.firstName}}</td>
-                    <td>{{citizen.lastName}}</td>
-                    <td>{{citizen.email}}</td>
-
-                    {{#if citizen.status}}
-                        <td>
-                            <button class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#status-{{citizen.id}}">Desactivar</button>
-                        </td>
-
-                        {{else}}
-
-                        <td>
-                            <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#status-{{citizen.id}}">Activar</button>
-                        </td>
-
-                    {{/if}}
-
-                    <td class="d-flex gap-2">
-                        <button type="button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#edit-{{citizen.id}}">
-                            Editar
+            <!-- Status Modal -->
+            <div
+              class="modal fade"
+              id="status-{{citizen.id}}"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Cambiar
+                      Estado</h1>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <p class="">
+                      ¿Seguro de que desea cambiar el estado de
+                      <strong>
+                        {{citizen.firstName}}
+                        {{citizen.lastName}}</strong>?
+                    </p>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >Cancelar</button>
+                    <form
+                      method="POST"
+                      action="/admin/changeStatusCitizen/{{citizen.id}}"
+                    >
+                      {{#if citizen.status}}
+                        <button type="submit" class="btn btn-danger">
+                          Desactivar
                         </button>
-                    </td>
-                </tr>
-
-                {{!-- Edit Modal --}}
-                <div class="modal fade" id="edit-{{citizen.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Ciudadano</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <form method="POST" action="/admin/editCitizen">
-                                <div class="modal-body">
-                                    <section>
-                                        <input hidden type="text" class="form-control" id="id" name="Id" 
-                                                placeholder="id" value="{{citizen.id}}">
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="documentId" name="DocumentId" 
-                                                placeholder="documentId" value="{{citizen.documentId}}">
-                                            <label for="documentId" class="col-form-label">Documento de Identidad</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="firstname" name="FirstName"
-                                                placeholder="firstname" value="{{citizen.firstName}}">
-                                            <label for="firstname" class="col-form-label">Nombre</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="lastname" name="LastName"
-                                                placeholder="lastname" value="{{citizen.lastName}}">
-                                            <label for="lastname" class="col-form-label">Apellido</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="email" class="form-control" id="email" name="Email" placeholder="email" value="{{citizen.email}}">
-                                            <label for="email" class="col-form-label">Email</label>
-                                        </div>
-                                        <input hidden type="text" class="form-control" id="status" name="Status" 
-                                                placeholder="status" value="{{citizen.status}}">
-                                    </section>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                    <button type="submit" class="btn btn-primary">Guardar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                      {{else}}
+                        <button type="submit" class="btn btn-primary">
+                          Activar
+                        </button>
+                      {{/if}}
+                    </form>
+                  </div>
                 </div>
-                {{!-- Edit Modal --}}
+              </div>
+            </div>
+            <!-- Status Modal -->
 
-                <!-- Status Modal -->
-                <div class="modal fade" id="status-{{citizen.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Cambiar Estado</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p class="">
-                                    ¿Seguro de que desea cambiar el estado de <strong> {{citizen.firstName}} {{citizen.lastName}}</strong>?
-                                </p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <form method="POST" action="/admin/changeStatusCitizen/{{citizen.id}}">
-                                    {{#if citizen.status}}
-                                    <button type="submit" class="btn btn-danger">
-                                        Desactivar
-                                    </button>
-                                    {{else}}
-                                    <button type="submit" class="btn btn-primary">
-                                        Activar
-                                    </button>
-                                    {{/if}}
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Status Modal -->
-
-                {{/each}}
-            </tbody>
-        </table>
+          {{/each}}
+        </tbody>
+      </table>
     </section>
 
-    {{else}}
+  {{else}}
 
-    {{#if hasError}}
-    {{else}}
-    <section class="col-6 bg-danger rounded-3 text-white text-center mx-auto p-4 mt-5">
-        <h3 class="display-8 fw-normal text-uppercase fw-bolder m-0"> No hay registros de ciudadanos </h3>
-    </section>
+    {{#if hasError}}{{else}}
+      <section
+        class="col-6 bg-danger rounded-3 text-white text-center mx-auto p-4 mt-5"
+      >
+        <h3 class="display-8 fw-normal text-uppercase fw-bolder m-0">
+          No hay registros de ciudadanos
+        </h3>
+      </section>
     {{/if}}
 
-    {{/if}}
+  {{/if}}
 </div>

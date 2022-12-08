@@ -12,6 +12,7 @@ const citizenRoute = require("./routes/citizen");
 const electivePositionRoute = require("./routes/electivePosition");
 const politicRoute = require("./routes/politic");
 const candidateRoute = require("./routes/candidate");
+const homeRoute = require("./routes/home");
 
 //Models
 const citizen = require("./models/citizen");
@@ -25,9 +26,7 @@ const port = 5000;
 const app = express();
 
 app.use("/img", express.static(path.join(__dirname, "img")));
-
 app.use(express.urlencoded({ extended: false }));
-
 const imageStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "img/politics");
@@ -38,7 +37,6 @@ const imageStorage = multer.diskStorage({
     cb(null, `${uuidv4()}.${extname}`);
   },
 });
-
 app.use(multer({ storage: imageStorage }).single("logoImg"));
 
 // View Engine Config
@@ -54,23 +52,25 @@ app.set("view engine", "hbs");
 app.set("views", "views");
 
 // Middlewares
+app.use(homeRoute);
 app.use("/admin", citizenRoute);
 app.use("/admin", politicRoute);
 app.use("/admin", electivePositionRoute);
 app.use("/admin", candidateRoute);
 app.use("/", errorController.get404);
 
-
-//relataionship
-
+// Relationships
 candidate.belongsTo(politic, { constraint: true, onDelete: "RESTRICT" });
 politic.hasMany(candidate);
 
-candidate.belongsTo(electivePosition, { constraint: true, onDelete: "RESTRICT" });
+candidate.belongsTo(electivePosition, {
+  constraint: true,
+  onDelete: "RESTRICT",
+});
 electivePosition.hasMany(candidate);
 
 sequelize
-  .sync({force:true})
+  .sync(/* { force: true } */)
   .then((result) =>
     app.listen(port, hostname, () =>
       console.log(`App running at http://${hostname}:${port}/`)

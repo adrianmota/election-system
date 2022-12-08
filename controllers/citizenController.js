@@ -6,10 +6,10 @@ exports.getIndex = (req, res, next) => {
       const citizen = result.map((result) => result.dataValues);
 
       res.render("citizen/index", {
-        pageTitle: "Citizen",
+        title: "Citizen",
         module: "citizen",
-        hasCitizen: citizen.length > 0,
         citizen: citizen,
+        hasCitizen: citizen.length > 0,
         hasError: false,
       });
     })
@@ -22,10 +22,9 @@ exports.createCitizenPost = (req, res, next) => {
   let hasError = false;
   let errorMessage = "";
 
-  console.log(req.body);
-  const { DocumentId, FirstName, LastName, Email } = req.body;
+  const { documentId, firstName, lastName, email } = req.body;
 
-  if (!DocumentId || !FirstName || !LastName || !Email) {
+  if (!documentId || !firstName || !lastName || !email) {
     hasError = true;
     errorMessage = "Todos los campos son obligatorios";
   }
@@ -51,7 +50,7 @@ exports.createCitizenPost = (req, res, next) => {
     return;
   }
 
-  Citizen.findOne({ where: { documentId: DocumentId } }).then((result) => {
+  Citizen.findOne({ where: { documentId } }).then((result) => {
     if (result) {
       hasError = true;
       errorMessage = "Este ciudadano ya existe.";
@@ -79,14 +78,12 @@ exports.createCitizenPost = (req, res, next) => {
       return;
     }
 
-    Citizen.findOne({ where: { email: Email } })
+    Citizen.findOne({ where: { email } })
       .then((result) => {
         if (result) {
           hasError = true;
           errorMessage = "Este correo ya existe.";
         }
-
-        console.log(errorMessage);
 
         if (hasError) {
           Citizen.findAll()
@@ -109,10 +106,10 @@ exports.createCitizenPost = (req, res, next) => {
         }
 
         Citizen.create({
-          documentId: DocumentId,
-          firstName: FirstName,
-          lastName: LastName,
-          email: Email,
+          documentId,
+          firstName,
+          lastName,
+          email,
           status: true,
         })
           .then((result) => {
@@ -129,22 +126,19 @@ exports.createCitizenPost = (req, res, next) => {
         console.log(err);
       });
   });
-  
 };
 
 exports.editCitizenPost = (req, res, next) => {
   let hasError = false;
   let errorMessage = "";
 
-  const { Id, DocumentId, FirstName, LastName, Email, Status } = req.body;
+  const { id, documentId, firstName, lastName, email, status } = req.body;
 
   console.log(req.body);
-  if (!DocumentId || !FirstName || !LastName || !Email || !Status) {
+  if (!documentId || !firstName || !lastName || !email || !status) {
     hasError = true;
     errorMessage = "Todos los campos son obligatorios";
   }
-
-  console.log(errorMessage);
 
   if (hasError) {
     Citizen.findAll()
@@ -166,13 +160,13 @@ exports.editCitizenPost = (req, res, next) => {
     return;
   }
 
-  Citizen.findOne({ where: { documentId: DocumentId } })
+  Citizen.findOne({ where: { documentId } })
     .then((result) => {
       if (result) {
-        if(result.dataValues.id != Id){
-            hasError = true;
-            errorMessage = "Este ciudadano ya existe.";
-        }        
+        if (result.dataValues.id != id) {
+          hasError = true;
+          errorMessage = "Este ciudadano ya existe.";
+        }
       }
       console.log(errorMessage);
 
@@ -196,13 +190,13 @@ exports.editCitizenPost = (req, res, next) => {
         return;
       }
 
-      Citizen.findOne({ where: { email: Email } })
+      Citizen.findOne({ where: { email } })
         .then((result) => {
           if (result) {
-            if(result.dataValues.id != Id ){
-                hasError = true;
-                errorMessage = "Este correo ya existe.";
-            }            
+            if (result.dataValues.id != id) {
+              hasError = true;
+              errorMessage = "Este correo ya existe.";
+            }
           }
 
           console.log(errorMessage);
@@ -226,15 +220,12 @@ exports.editCitizenPost = (req, res, next) => {
               });
             return;
           }
-          Citizen.findOne({ where: { id: Id } })
+          Citizen.findOne({ where: { id: id } })
             .then((result) => {
-
               if (result == null) {
                 hasError = true;
                 errorMessage = "Este ciudadano no se ha encontrado";
               }
-
-              console.log(errorMessage);
 
               if (hasError) {
                 Citizen.findAll()
@@ -257,14 +248,14 @@ exports.editCitizenPost = (req, res, next) => {
               }
               Citizen.update(
                 {
-                  documentId: DocumentId,
-                  firstName: FirstName,
-                  lastName: LastName,
-                  email: Email,
-                  status: Status,
+                  documentId,
+                  firstName,
+                  lastName,
+                  email,
+                  status: status,
                 },
                 {
-                  where: { id: Id },
+                  where: { id },
                 }
               )
                 .then((result) => {
@@ -291,7 +282,7 @@ exports.editCitizenPost = (req, res, next) => {
 };
 
 exports.changeStatusCitizen = (req, res, next) => {
-  const citizenId = req.params.idCitizen
+  const citizenId = req.params.idCitizen;
 
   Citizen.findOne({ where: { id: citizenId } })
     .then((result) => {
@@ -314,9 +305,9 @@ exports.changeStatusCitizen = (req, res, next) => {
           .catch((err) => {
             console.log(err);
           });
-          return;
+        return;
       }
-      citizenVM.status = !citizenVM.status ;
+      citizenVM.status = !citizenVM.status;
       Citizen.update(
         {
           firstName: citizenVM.firstName,
