@@ -19,6 +19,7 @@ const citizen = require("./models/citizen");
 const electivePosition = require("./models/electivePosition");
 const politic = require("./models/politic");
 const candidate = require("./models/candidate");
+const user = require("./models/user");
 
 const hostname = "127.0.0.1";
 const port = 5000;
@@ -70,7 +71,7 @@ candidate.belongsTo(electivePosition, {
 electivePosition.hasMany(candidate);
 
 sequelize
-  .sync(/* { force: true } */)
+  .sync({ force: true })
   .then((result) =>
     app.listen(port, hostname, () =>
       console.log(`App running at http://${hostname}:${port}/`)

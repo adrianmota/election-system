@@ -2,29 +2,37 @@ const Sequelize = require("sequelize");
 
 const sequelize = require("../context/appContext");
 
-const Candidate = sequelize.define("Candidate", {
+const User = sequelize.define("User", {
   id: {
     type: Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
     primaryKey: true,
+    allowNull: false,
+    autoIncrement: true,
   },
-  firstName: {
+  firstname: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  lastName: {
+  lastname: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  ProfilePhoto: {
+  email: {
     type: Sequelize.STRING,
     allowNull: false,
-  },  
-  status: {
+  },
+  username: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  state: {
     type: Sequelize.BOOLEAN,
-    defaultValue: true,
+    allowNull: false,
   },
 });
 
-module.exports = Candidate;
+module.exports = User;
