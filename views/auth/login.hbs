@@ -1,0 +1,53 @@
+<div class="row">
+  {{#if hasError}}
+    <div class="col-6 mx-auto my-4">
+      <div class="alert alert-danger text-center" role="alert">
+        <strong>Error:</strong>
+        {{errorMessage}}       
+      </div>
+    </div>
+  {{/if}}
+
+  <div class="col-md-12  {{#if hasError}}  {{else}} mt-5 {{/if}}">
+    <div class="card col-md-6   shadow mx-auto">
+      <div class="card-body">
+        <h5 class="card-title text-center">Iniciar Sesion</h5>
+        <form class="form-control border-0" method="POST" action="/login">
+          <div class="mb-3 row">
+            <label
+              for="username"
+              class="col-sm-4 col-form-label"
+            >Usuario</label>
+            <div class="col-sm-8">
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                name="username"
+              />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label
+              for="password"
+              class="col-sm-4 col-form-label"
+            >Contraseña</label>
+            <div class="col-sm-8">
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+              />
+            </div>
+          </div>
+          <div class="flex justify-content-between">
+            <button type="submit" class="w-100 btn  btn-primary">
+                Iniciar Sesion
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

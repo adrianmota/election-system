@@ -1,18 +1,19 @@
 const { Router } = require("express");
 const router = Router();
 const electivePositionController = require("../controllers/electivePositionController");
+const isAuth = require("../middleware/is-auth");
 
-router.get("/electivePositions", electivePositionController.getIndex);
+router.get("/electivePositions",isAuth, electivePositionController.getIndex);
 router.post(
-  "/createElectivePosition",
+  "/createElectivePosition",isAuth,
   electivePositionController.postCreateElectivePosition
 );
 router.post(
-  "/editElectivePosition/:id",
+  "/editElectivePosition/:id",isAuth,
   electivePositionController.postEditElectivePosition
 );
 router.post(
-  "/changeElectivePositionStatus/:id",
+  "/changeElectivePositionStatus/:id",isAuth,
   electivePositionController.postChangeElectivePositionStatus
 );
 
