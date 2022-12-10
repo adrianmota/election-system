@@ -11,7 +11,6 @@ const admin = {
 }
 
 exports.createUser = () => {
-    console.log("f");
   user
     .findOne({ where: { username: "admin" } })
     .then((result) => {
