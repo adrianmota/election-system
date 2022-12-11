@@ -26,7 +26,6 @@ const user = require("./models/user");
 const election = require("./models/election");
 const vote = require("./models/vote");
 
-
 //Seed
 const userDefault = require("./seed/userDefault");
 
@@ -74,7 +73,8 @@ app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
   }
-  user.findByPk(req.session.user.id)
+  user
+    .findByPk(req.session.user.id)
     .then((user) => {
       req.user = user;
       next();
@@ -126,10 +126,10 @@ election.hasMany(vote);
 userDefault.createUser();
 
 sequelize
-  .sync()
-  .then((result) =>
-  {     app.listen(port, hostname, () =>
-      console.log(`App running at http://${hostname}:${port}/`)   
-    )
+  .sync(/* { force: true } */)
+  .then((result) => {
+    app.listen(port, hostname, () =>
+      console.log(`App running at http://${hostname}:${port}/`)
+    );
   })
   .catch((err) => console.error(err));
