@@ -4,6 +4,7 @@ const sequelize = require("./context/appContext");
 const path = require("path");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
+const session = require("express-session");
 
 const errorController = require("./controllers/errorController");
 
@@ -13,6 +14,7 @@ const electivePositionRoute = require("./routes/electivePosition");
 const politicRoute = require("./routes/politic");
 const candidateRoute = require("./routes/candidate");
 const homeRoute = require("./routes/home");
+const authRoute = require("./routes/auth");
 
 //Models
 const citizen = require("./models/citizen");
@@ -21,8 +23,12 @@ const politic = require("./models/politic");
 const candidate = require("./models/candidate");
 const user = require("./models/user");
 
-const HOSTNAME = "127.0.0.1";
-const PORT = 5000;
+
+//Seed
+const userDefault = require("./seed/userDefault");
+
+const hostname = "127.0.0.1";
+const port = 5000;
 
 const app = express();
 
@@ -53,11 +59,39 @@ app.set("view engine", "hbs");
 app.set("views", "views");
 
 // Middlewares
+
+app.use(
+  session({ secret: "HJIIIHVVHVHIUG", resave: true, saveUninitialized: false })
+);
+
+app.use((req, res, next) => {
+  if (!req.session) {
+    return next();
+  }
+  if (!req.session.user) {
+    return next();
+  }
+  user.findByPk(req.session.user.id)
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  next();
+});
+
 app.use(homeRoute);
 app.use("/admin", citizenRoute);
 app.use("/admin", politicRoute);
 app.use("/admin", electivePositionRoute);
 app.use("/admin", candidateRoute);
+app.use(authRoute);
 app.use("/", errorController.get404);
 
 // Relationships
@@ -70,11 +104,13 @@ candidate.belongsTo(electivePosition, {
 });
 electivePosition.hasMany(candidate);
 
+userDefault.createUser();
+
 sequelize
-  .sync({ force: true })
+  .sync()
   .then((result) =>
-    app.listen(PORT, HOSTNAME, () =>
-      console.log(`App running at http://${HOSTNAME}:${PORT}/`)
+  {     app.listen(port, hostname, () =>
+      console.log(`App running at http://${hostname}:${port}/`)   
     )
-  )
+  })
   .catch((err) => console.error(err));

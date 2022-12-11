@@ -1,13 +1,16 @@
 const { Router } = require("express");
 const router = Router();
 const candidateController = require("../controllers/candidateController");
+const isAuth = require("../middleware/is-auth");
 
-router.get("/candidate", candidateController.getIndex);
 
-router.post("/createCandidate", candidateController.createCandidatePost);
-router.post("/editCandidate", candidateController.editCandidatePost);
+router.get("/candidate",isAuth, candidateController.getIndex);
+
+router.post("/createCandidate",isAuth, candidateController.createCandidatePost);
+router.post("/editCandidate",isAuth, candidateController.editCandidatePost);
 router.post(
   "/changeStatusCandidate/:idCandidate",
+  isAuth,
   candidateController.changeStatusCandidate
 );
 

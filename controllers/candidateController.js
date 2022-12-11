@@ -27,9 +27,7 @@ exports.getIndex = (req, res, next) => {
                 politic: politic,
                 hasPolitic: politic.length > 0,
                 electivePosition: electivePosition,
-                hasElectivePosition: electivePosition.length > 0,
-                hasError: hasError,
-                errorMessage: errorMessage,
+                hasElectivePosition: electivePosition.length > 0,                
               });
             })
             .catch((err) => {

@@ -1,7 +1,18 @@
 <div class="container-fluid">
-    <div class="row mt-4">
-        <div class="col-8 offset-2">
-            <h2 class="text-dark">{{message}}</h2>
+  <div class="row mt-4">
+    <div class="col-8 mx-auto text-center">
+      <h2 class="text-dark">
+        Bienvenido a la sección del
+        {{#if isAuthenticated}} administrador {{else}}elector{{/if}}
+      </h2>
+      {{#if hasError}}
+        <div class="col-6 mx-auto my-4">
+          <div class="alert alert-danger text-center" role="alert">
+            <strong>Error:</strong>
+            {{errorMessage}}
+          </div>
         </div>
+      {{/if}}
     </div>
+  </div>
 </div>

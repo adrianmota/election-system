@@ -19,6 +19,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    {{#if isAuthenticated}}
                     <ul class="navbar-nav flex-grow-1 gap-2">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -32,9 +33,23 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{#if booksActive}} active {{/if}}" href="/admin/elections">Elecciones</a>
-                        </li>
+                            <a class="nav-link" href="/admin/elections">Elecciones</a>
+                        </li>                        
                     </ul>
+                     <ul class="navbar-nav flex-grow-1 justify-content-end">                     
+                        <li class="nav-item text-end">
+                            <form method="post" action="/logout">
+                                <button  class="bg-dark border-0 text-secondary"  type="submit">Cerrar Sesion</button>
+                            </form>                            
+                        </li>                        
+                    </ul> 
+                    {{else}}    
+                    <ul class="navbar-nav flex-grow-1 justify-content-end">                     
+                        <li class="nav-item text-end">
+                            <a class="nav-link" href="/login">Iniciar Sesion</a>
+                        </li>                        
+                    </ul>                                          
+                    {{/if}}
                 </div>
             </div>
         </nav>
