@@ -21,8 +21,8 @@ const politic = require("./models/politic");
 const candidate = require("./models/candidate");
 const user = require("./models/user");
 
-const hostname = "127.0.0.1";
-const port = 5000;
+const HOSTNAME = "127.0.0.1";
+const PORT = 5000;
 
 const app = express();
 
@@ -73,8 +73,8 @@ electivePosition.hasMany(candidate);
 sequelize
   .sync({ force: true })
   .then((result) =>
-    app.listen(port, hostname, () =>
-      console.log(`App running at http://${hostname}:${port}/`)
+    app.listen(PORT, HOSTNAME, () =>
+      console.log(`App running at http://${HOSTNAME}:${PORT}/`)
     )
   )
   .catch((err) => console.error(err));
