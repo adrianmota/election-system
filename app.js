@@ -15,6 +15,7 @@ const politicRoute = require("./routes/politic");
 const candidateRoute = require("./routes/candidate");
 const homeRoute = require("./routes/home");
 const authRoute = require("./routes/auth");
+const electionRoute = require("./routes/elections");
 
 //Models
 const citizen = require("./models/citizen");
@@ -22,6 +23,8 @@ const electivePosition = require("./models/electivePosition");
 const politic = require("./models/politic");
 const candidate = require("./models/candidate");
 const user = require("./models/user");
+const election = require("./models/election");
+const vote = require("./models/vote");
 
 
 //Seed
@@ -91,6 +94,7 @@ app.use("/admin", citizenRoute);
 app.use("/admin", politicRoute);
 app.use("/admin", electivePositionRoute);
 app.use("/admin", candidateRoute);
+app.use("/admin", electionRoute);
 app.use(authRoute);
 app.use("/", errorController.get404);
 
@@ -103,6 +107,21 @@ candidate.belongsTo(electivePosition, {
   onDelete: "RESTRICT",
 });
 electivePosition.hasMany(candidate);
+
+vote.belongsTo(citizen, { constraint: true, onDelete: "RESTRICT" });
+citizen.hasMany(vote);
+
+vote.belongsTo(candidate, { constraint: true, onDelete: "RESTRICT" });
+candidate.hasMany(vote);
+
+vote.belongsTo(politic, { constraint: true, onDelete: "RESTRICT" });
+politic.hasMany(vote);
+
+vote.belongsTo(electivePosition, { constraint: true, onDelete: "RESTRICT" });
+electivePosition.hasMany(vote);
+
+vote.belongsTo(election, { constraint: true, onDelete: "RESTRICT" });
+election.hasMany(vote);
 
 userDefault.createUser();
 
