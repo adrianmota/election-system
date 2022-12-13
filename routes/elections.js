@@ -6,7 +6,7 @@ const isAuth = require("../middleware/is-auth");
 router.get("/election", isAuth,electionController.getIndex);
 router.get("/election/:idElection", isAuth,electionController.getResult);
 
-// router.post("/createElection",isAuth, electionController.createElectionPost);
+router.get("/createElection",isAuth, electionController.createElection);
 // router.post("/editElection",isAuth, electionController.editElectionPost);
 // router.post(
 //   "/changeStatusElection/:idElection",

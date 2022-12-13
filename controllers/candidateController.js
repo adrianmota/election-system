@@ -23,11 +23,11 @@ exports.getIndex = (req, res, next) => {
                 pageTitle: "Candidate",
                 module: "candidate",
                 hasCandidate: candidate.length > 0,
-                candidate: candidate,                      
+                candidate: candidate,
                 politic: politic,
                 hasPolitic: politic.length > 0,
                 electivePosition: electivePosition,
-                hasElectivePosition: electivePosition.length > 0,                
+                hasElectivePosition: electivePosition.length > 0,
               });
             })
             .catch((err) => {
@@ -92,11 +92,11 @@ exports.createCandidatePost = (req, res, next) => {
                   pageTitle: "Candidate",
                   module: "candidate",
                   hasCandidate: candidate.length > 0,
-                  candidate: candidate,                      
+                  candidate: candidate,
                   politic: politic,
                   hasPolitic: politic.length > 0,
                   electivePosition: electivePosition,
-                  hasElectivePosition: electivePosition.length > 0, 
+                  hasElectivePosition: electivePosition.length > 0,
                   hasError: hasError,
                   errorMessage: errorMessage,
                 });
@@ -144,7 +144,7 @@ exports.createCandidatePost = (req, res, next) => {
                     pageTitle: "Candidate",
                     module: "candidate",
                     hasCandidate: candidate.length > 0,
-                    candidate: candidate,                      
+                    candidate: candidate,
                     politic: politic,
                     hasPolitic: politic.length > 0,
                     electivePosition: electivePosition,
@@ -197,7 +197,7 @@ exports.createCandidatePost = (req, res, next) => {
                         pageTitle: "Candidate",
                         module: "candidate",
                         hasCandidate: candidate.length > 0,
-                        candidate: candidate,                      
+                        candidate: candidate,
                         politic: politic,
                         hasPolitic: politic.length > 0,
                         electivePosition: electivePosition,
@@ -220,9 +220,63 @@ exports.createCandidatePost = (req, res, next) => {
           return;
         }
 
-        Candidate.create(candidateVM)
+        Candidate.findOne({ PoliticId: candidateVM.politicId, ElectivePositionId:candidateVM.electivePositionId })
           .then((result) => {
-            res.redirect("/admin/candidate");
+            if (result) {
+              if (hasError) {
+                Candidate.findAll({
+                  include: [{ model: Politic }, { model: ElectivePosition }],
+                })
+                  .then((result) => {
+                    const candidate = result.map((result) => result.dataValues);
+
+                    Politic.findAll({ where: { status: true } })
+                      .then((result) => {
+                        const politic = result.map(
+                          (result) => result.dataValues
+                        );
+
+                        ElectivePosition.findAll({ where: { status: true } })
+                          .then((result) => {
+                            const electivePosition = result.map(
+                              (result) => result.dataValues
+                            );
+
+                            res.render("candidate/index", {
+                              pageTitle: "Candidate",
+                              module: "candidate",
+                              hasCandidate: candidate.length > 0,
+                              candidate: candidate,
+                              politic: politic,
+                              hasPolitic: politic.length > 0,
+                              electivePosition: electivePosition,
+                              hasElectivePosition: electivePosition.length > 0,
+                              hasError: true,
+                              errorMessage:
+                                "Ya existe un candidato de su partido en esta posicion.",
+                            });
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                          });
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+                return;
+              }
+              Candidate.create(candidateVM)
+                .then((result) => {
+                  res.redirect("/admin/candidate");
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
           })
           .catch((err) => {
             console.log(err);
@@ -245,7 +299,7 @@ exports.editCandidatePost = (req, res, next) => {
   const profilePhoto = req.file;
 
   const candidateVM = {
-    id:id,
+    id: id,
     firstName: firstName,
     lastName: lastName,
     profilePhoto: profilePhoto,
@@ -287,7 +341,7 @@ exports.editCandidatePost = (req, res, next) => {
                   pageTitle: "Candidate",
                   module: "candidate",
                   hasCandidate: candidate.length > 0,
-                  candidate: candidate,                      
+                  candidate: candidate,
                   politic: politic,
                   hasPolitic: politic.length > 0,
                   electivePosition: electivePosition,
@@ -338,7 +392,7 @@ exports.editCandidatePost = (req, res, next) => {
                       pageTitle: "Candidate",
                       module: "candidate",
                       hasCandidate: candidate.length > 0,
-                      candidate: candidate,                      
+                      candidate: candidate,
                       politic: politic,
                       hasPolitic: politic.length > 0,
                       electivePosition: electivePosition,
@@ -361,8 +415,9 @@ exports.editCandidatePost = (req, res, next) => {
         return;
       }
 
-      Politic.findOne({where:{id:politicId}}).then((result)=>{
-        if (!result) {
+      Politic.findOne({ where: { id: politicId } })
+        .then((result) => {
+          if (!result) {
             hasError = true;
             errorMessage = "Este partido no existe.";
           }
@@ -373,22 +428,22 @@ exports.editCandidatePost = (req, res, next) => {
             })
               .then((result) => {
                 const candidate = result.map((result) => result.dataValues);
-    
+
                 Politic.findAll({ where: { status: true } })
                   .then((result) => {
                     const politic = result.map((result) => result.dataValues);
-    
+
                     ElectivePosition.findAll({ where: { status: true } })
                       .then((result) => {
                         const electivePosition = result.map(
                           (result) => result.dataValues
                         );
-    
+
                         res.render("candidate/index", {
                           pageTitle: "Candidate",
                           module: "candidate",
                           hasCandidate: candidate.length > 0,
-                          candidate: candidate,                      
+                          candidate: candidate,
                           politic: politic,
                           hasPolitic: politic.length > 0,
                           electivePosition: electivePosition,
@@ -409,10 +464,11 @@ exports.editCandidatePost = (req, res, next) => {
                 console.log(err);
               });
             return;
-          }    
+          }
 
-        ElectivePosition.findOne({where:{id:electivePositionId}}).then((result)=>{
-            if (!result) {
+          ElectivePosition.findOne({ where: { id: electivePositionId } })
+            .then((result) => {
+              if (!result) {
                 hasError = true;
                 errorMessage = "Este puesto electivo no existe.";
               }
@@ -423,22 +479,24 @@ exports.editCandidatePost = (req, res, next) => {
                 })
                   .then((result) => {
                     const candidate = result.map((result) => result.dataValues);
-        
+
                     Politic.findAll({ where: { status: true } })
                       .then((result) => {
-                        const politic = result.map((result) => result.dataValues);
-        
+                        const politic = result.map(
+                          (result) => result.dataValues
+                        );
+
                         ElectivePosition.findAll({ where: { status: true } })
                           .then((result) => {
                             const electivePosition = result.map(
                               (result) => result.dataValues
                             );
-        
+
                             res.render("candidate/index", {
                               pageTitle: "Candidate",
                               module: "candidate",
                               hasCandidate: candidate.length > 0,
-                              candidate: candidate,                      
+                              candidate: candidate,
                               politic: politic,
                               hasPolitic: politic.length > 0,
                               electivePosition: electivePosition,
@@ -459,19 +517,88 @@ exports.editCandidatePost = (req, res, next) => {
                     console.log(err);
                   });
                 return;
-              }   
-            Candidate.update({candidateVM},{where:{id:candidateVM.id}}).then((result)=>{                
-                res.status(302).redirect("/admin/candidate")
-            }).catch((err)=>{
-                console.log(err);
-            })
-        }).catch((err)=>{
-            console.log(err);
-        })
-      }).catch((err)=>{
-        console.log(err);
-      });
+              }
 
+              Candidate.findOne({ where: { PoliticId: candidateVM.politicId, ElectivePositionId:candidateVM.electivePositionId} })
+                .then((result) => {
+                  if (result.dataValues.id != candidateVM.id) {
+                    if (hasError) {
+                      Candidate.findAll({
+                        include: [
+                          { model: Politic },
+                          { model: ElectivePosition },
+                        ],
+                      })
+                        .then((result) => {
+                          const candidate = result.map(
+                            (result) => result.dataValues
+                          );
+
+                          Politic.findAll({ where: { status: true } })
+                            .then((result) => {
+                              const politic = result.map(
+                                (result) => result.dataValues
+                              );
+
+                              ElectivePosition.findAll({
+                                where: { status: true },
+                              })
+                                .then((result) => {
+                                  const electivePosition = result.map(
+                                    (result) => result.dataValues
+                                  );
+
+                                  res.render("candidate/index", {
+                                    pageTitle: "Candidate",
+                                    module: "candidate",
+                                    hasCandidate: candidate.length > 0,
+                                    candidate: candidate,
+                                    politic: politic,
+                                    hasPolitic: politic.length > 0,
+                                    electivePosition: electivePosition,
+                                    hasElectivePosition:
+                                      electivePosition.length > 0,
+                                    hasError: true,
+                                    errorMessage:
+                                      "Ya existe un candidato de su partido en esta posicion.",
+                                  });
+                                })
+                                .catch((err) => {
+                                  console.log(err);
+                                });
+                            })
+                            .catch((err) => {
+                              console.log(err);
+                            });
+                        })
+                        .catch((err) => {
+                          console.log(err);
+                        });
+                      return;
+                    }
+                    Candidate.update(
+                      { candidateVM },
+                      { where: { id: candidateVM.id } }
+                    )
+                      .then((result) => {
+                        res.status(302).redirect("/admin/candidate");
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                  }
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     })
     .catch((err) => {
       console.log(err);
@@ -480,7 +607,6 @@ exports.editCandidatePost = (req, res, next) => {
       console.log(err);
     });
 };
-
 
 exports.changeStatusCandidate = (req, res, next) => {
   let hasError = false;
@@ -493,7 +619,7 @@ exports.changeStatusCandidate = (req, res, next) => {
 
       if (!candidateVM) {
         hasError = true;
-        errorMessage="No se ha encontrado el candidato."
+        errorMessage = "No se ha encontrado el candidato.";
       }
 
       if (hasError) {
@@ -517,7 +643,7 @@ exports.changeStatusCandidate = (req, res, next) => {
                       pageTitle: "Candidate",
                       module: "candidate",
                       hasCandidate: candidate.length > 0,
-                      candidate: candidate,                      
+                      candidate: candidate,
                       politic: politic,
                       hasPolitic: politic.length > 0,
                       electivePosition: electivePosition,
@@ -538,10 +664,10 @@ exports.changeStatusCandidate = (req, res, next) => {
             console.log(err);
           });
         return;
-      }    
+      }
 
       candidateVM.status = !candidateVM.status;
-      Candidate.update(candidateVM,{ where: { id: candidateVM.id } })
+      Candidate.update(candidateVM, { where: { id: candidateVM.id } })
         .then((result) => {
           return res.redirect("/admin/candidate");
         })

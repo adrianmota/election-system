@@ -25,6 +25,7 @@ const candidate = require("./models/candidate");
 const user = require("./models/user");
 const election = require("./models/election");
 const vote = require("./models/vote");
+const resultElection = require("./models/resultElection");
 
 //Seed
 const userDefault = require("./seed/userDefault");
@@ -123,10 +124,25 @@ electivePosition.hasMany(vote);
 vote.belongsTo(election, { constraint: true, onDelete: "RESTRICT" });
 election.hasMany(vote);
 
+resultElection.belongsTo(election, { constraint: true, onDelete: "RESTRICT" });
+election.hasMany(resultElection);
+
+resultElection.belongsTo(election, { constraint: true, onDelete: "RESTRICT" });
+election.hasMany(resultElection);
+
+resultElection.belongsTo(candidate, { constraint: true, onDelete: "RESTRICT" });
+candidate.hasMany(resultElection);
+
+resultElection.belongsTo(politic, { constraint: true, onDelete: "RESTRICT" });
+politic.hasMany(resultElection);
+
+resultElection.belongsTo(electivePosition, { constraint: true, onDelete: "RESTRICT" });
+electivePosition.hasMany(resultElection);
+
 userDefault.createUser();
 
 sequelize
-  .sync(/* { force: true } */)
+  .sync(/*{ force: true }*/)
   .then((result) => {
     app.listen(port, hostname, () =>
       console.log(`App running at http://${hostname}:${port}/`)
