@@ -6,12 +6,7 @@ const isAuth = require("../middleware/is-auth");
 router.get("/election", isAuth,electionController.getIndex);
 router.get("/election/:idElection", isAuth,electionController.getResult);
 
-router.get("/createElection",isAuth, electionController.createElection);
-// router.post("/editElection",isAuth, electionController.editElectionPost);
-// router.post(
-//   "/changeStatusElection/:idElection",
-//   isAuth,
-//   electionController.changeStatusElection
-// );
+router.post("/createElection",isAuth, electionController.createElection);
+router.post("/closedElection/:idElection",isAuth, electionController.closedElection);
 
 module.exports = router;
