@@ -86,7 +86,26 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
+  if (!req.session) {
+    return next();
+  }
+  if (!req.session.citizen) {
+    return next();
+  }
+  citizen
+    .findByPk(req.session.citizen.id)
+    .then((citizen) => {
+      req.citizen = citizen;
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.isCitizenLogged = req.session.isCitizenLoggedIn;
   next();
 });
 

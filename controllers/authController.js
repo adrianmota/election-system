@@ -77,10 +77,46 @@ exports.PostLogin = (req, res, next) => {
     });
 };
 
+exports.PostLoginCitizen = (req, res, next) => {
+  const documentId = req.body.documentId;
+
+  if (!documentId) {
+    res.render("auth/login", {
+      pageTitle: "Login",
+      module: "Login",
+      hasError: true,
+      errorMessage: "Ingrese su cedula.",
+    });
+    return;
+  }
+
+  User.findOne({ where: { username: username } })
+    .then((citizen) => {
+      if (!citizen) {
+        res.render("auth/login", {
+          pageTitle: "Login",
+          module: "Login",
+          hasError: true,
+          errorMessage: "El usuario con el que intenta acceder no existe.",
+        });
+        return;
+      }
+
+      req.session.isCitizenLoggedIn = true;
+      req.session.citizen = citizen;
+      return req.session.save((err) => {
+        console.log(err);
+        res.redirect("/");
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 exports.Logout = (req, res, next) => {
   req.session.destroy((err) => {
     console.log(err);
     res.redirect("/");
   });
 };
-
