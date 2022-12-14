@@ -1,1 +1,240 @@
-ds.
+<div class="row">
+    <div class="col-12 mx-auto my-5">    
+        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#save">
+            Crear nuevo candidato
+        </button>
+    </div>
+
+    {{#if hasError}}
+        <div class="col-6 mx-auto my-5">
+            <div class="alert alert-danger text-center" role="alert">
+                <strong>Error:</strong> {{errorMessage}}
+                <a href="/admin/candidate" class="btn btn-sm btn-primary mt-3">Ver candidatos</a>
+            </div>
+        </div>
+    {{/if}}
+
+    {{!-- Create Modal --}}
+    <div class="modal fade" id="save" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        Crear Nuevo Candidato
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form enctype="multipart/form-data" method="POST" action="/admin/createCandidate">
+                    <div class="modal-body">
+                        <section>
+                            <div class="form-group d-flex flex-column gap-2">
+                                <label for="profilePhoto">Foto de Perfil</label>
+                                <input type="file" id="profilePhoto" class="form-control" name="profilePhoto"
+                                    placeholder="profilePhoto" required />
+                            </div>
+                            <div class="form-floating my-3">
+                                <input type="text" class="form-control" id="firstName" name="firstName"
+                                    placeholder="firstName">
+                                <label for="firstName" class="col-form-label">Nombre</label>
+                            </div>
+                            <div class="form-floating my-3">
+                                <input type="text" class="form-control" id="lastName" name="lastName"
+                                    placeholder="lastName">
+                                <label for="lastName" class="col-form-label">Apellido</label>
+                            </div>
+                            <div class="form-floating d-flex flex-column gap-2 my-3">
+                                <select class="form-select" name="politicId" id="politicId">
+
+                                    <option selected>Selecciona un partido...</option>
+
+                                    {{#each politic as |politic|}}
+                                    {{#if (compare politic.id ../candidate.politicId )}}
+                                    {{else}}
+                                    <option value="{{politic.id}}">{{politic.name}}</option>
+                                    {{/if}}
+                                    {{/each}}
+
+                                </select>
+                                <label for="politicId">Partido</label>
+                            </div>
+                            <div class="form-floating d-flex flex-column gap-2 my-3">
+                                <select class="form-select" name="electivePositionId" id="electivePositionId">
+
+                                    <option selected>Selecciona un posición electiva...</option>
+
+                                    {{#each electivePosition as |electivePosition|}}
+                                    {{#if (compare electivePosition.id ../candidate.electivePositionId )}}
+                                    {{else}}
+                                    <option value="{{electivePosition.id}}">{{electivePosition.name}}</option>
+                                    {{/if}}
+                                    {{/each}}
+
+                                </select>
+                                <label for="electivePositionId">Posición Electiva</label>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{!-- Create Modal --}}
+    
+
+    {{#if hasCandidate}}
+    
+    {{#each candidate as |candidate|}}
+
+    <section class="col-5 my-4 mx-auto">
+        <div class="card text-white border-0 shadow">
+            <section class="card-header bg-primary w-100 d-flex justify-content-center fw-bold text-uppercase">
+                {{candidate.name}}
+            </section>
+            <section class="card-body">
+                <img src="{{candidate.ProfilePhoto}}" class="card-img-top img-fluid" style="height: 250px; object-fit: cover;" alt="politic">
+            </section>
+            <section class="card-footer p-2">
+                <div class="d-flex flex-column gap-2">
+                    <section>
+                        <p>{{candidate.politic.dataValues.name}}</p>
+                    </section>
+                    <section>
+                        <p>{{candidate.electivePosition.dataValues.name}}</p>
+                    </section>
+                </div>
+                <div class="d-flex gap-2 p-2 mt-2 rounded w-100">
+                    <section class="w-100">
+                        {{#if politic.status}}
+                            <button class="btn btn-danger w-100" data-bs-toggle="modal"
+                                data-bs-target="#status-{{candidate.id}}">Desactivar</button>
+                        {{else}}
+                            <button class="btn btn-success w-100" data-bs-toggle="modal"
+                                data-bs-target="#status-{{candidate.id}}">Activar</button>
+                        {{/if}}
+                    </section>
+                    <section class="w-100">  
+                        <button type="button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#edit-{{candidate.id}}">
+                            Editar
+                        </button>
+                    </section>
+                </div>
+            </section>
+        </div>
+    </section>
+                
+
+    {{!-- Edit Modal --}}
+    <div class="modal fade" id="edit-{{candidate.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        Editar Candidato
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form enctype="multipart/form-data" method="POST" action="/admin/editCandidate">
+                    <div class="modal-body">
+                        <section>
+                            <div class="form-group d-flex flex-column gap-2">
+                                <label for="LogoImg">Foto de Perfil</label>
+                                <input type="file" id="profilePhoto" class="form-control" name="profilePhoto"
+                                    placeholder="profilePhoto" required />
+                            </div>
+                            <div class="form-floating my-3">
+                                <input type="text" class="form-control" id="firstName" name="firstName"
+                                    placeholder="firstName">
+                                <label for="firstName" class="col-form-label">Nombre</label>
+                            </div>
+                            <div class="form-floating my-3">
+                                <input type="text" class="form-control" id="lastName" name="lastName"
+                                    placeholder="lastName">
+                                <label for="lastName" class="col-form-label">Apellido</label>
+                            </div>
+                            <div class="form-floating d-flex flex-column gap-2">
+                                <select class="form-select" name="politicId" id="politicId">
+
+                                    {{#each politic as |politic|}}
+                                    {{#if (compare politic.id ../candidate.politicId )}}
+                                    <option selected value="{{politic.id}}">{{politic.name}}</option>
+                                    {{else}}
+                                    {{/if}}
+                                    {{/each}}
+
+                                </select>
+                                <label for="politicId">Partido</label>
+                            </div>
+                            <div class="form-floating d-flex flex-column gap-2">
+                                <select class="form-select" name="electivePositionId" id="electivePositionId">
+                                    
+                                    {{#each electivePosition as |electivePosition|}}
+                                    {{#if (compare electivePosition.id ../candidate.electivePositionId )}}
+                                    <option selected value="{{electivePosition.id}}">{{electivePosition.name}}</option>
+                                    {{else}}
+                                    {{/if}}
+                                    {{/each}}
+
+                                </select>
+                                <label for="electivePositionId">Posición Electiva</label>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{!-- Edit Modal --}}
+
+    <!-- Status Modal -->
+    <div class="modal fade" id="status-{{candidate.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Cambiar Estado</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="">
+                        ¿Seguro de que desea cambiar el estado del candidato <strong>{{candidate.firstName}}{{candidate.lastName}}</strong>?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form method="POST" action="/admin/changePoliticStatus/{{candidate.id}}">
+                        {{#if candidate.status}}
+                        <button type="submit" class="btn btn-danger">
+                            Desactivar
+                        </button>
+                        {{else}}
+                        <button type="submit" class="btn btn-primary">
+                            Activar
+                        </button>
+                        {{/if}}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Status Modal -->
+
+    {{/each}}
+
+    {{else}}
+
+    {{#if hasError}}
+    {{else}}
+    <section class="col-6 bg-danger rounded-3 text-white text-center mx-auto p-4 mt-5">
+        <h3 class="display-8 fw-normal text-uppercase fw-bolder m-0"> No hay registros de candidatos </h3>
+    </section>
+    {{/if}}
+
+    {{/if}}
+</div>

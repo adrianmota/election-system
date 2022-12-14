@@ -9,7 +9,7 @@
         <div class="col-6 mx-auto my-5">
             <div class="alert alert-danger text-center" role="alert">
                 <strong>Error:</strong> {{errorMessage}}
-                <a href="/admin/politics" class="btn btn-sm btn-primary">ver partidos</a>
+                <a href="/admin/politics" class="btn btn-sm btn-primary mt-3">Ver partidos</a>
             </div>
         </div>
     {{/if}}
@@ -65,7 +65,7 @@
                 {{politic.name}}
             </section>
             <section class="card-body">
-                <img src="{{politic.logoImg}}" class="card-img-top img-fluid img-cover" alt="politic">
+                <img src="{{politic.logoImg}}" class="card-img-top img-fluid" style="height: 250px; object-fit: cover;" alt="politic">
             </section>
             <section class="card-footer p-2">
                 <div class="d-flex flex-column gap-2">
