@@ -3,6 +3,7 @@ const Candidate = require("../models/candidate");
 const Vote = require("../models/vote");
 const Politic = require("../models/politic");
 const Election = require("../models/election");
+// const ResultElection = require("../models/resultElection");
 
 exports.getIndex = (req, res, next) => {
   ElectivePosition.findAll({ where: { status: true } })
@@ -41,7 +42,7 @@ exports.getCandidates = (req, res, next) => {
     .catch((err) => console.error(err));
 };
 
-exports.postGenerateVote = (req, res, next) => {
+exports.postCreate = (req, res, next) => {
   const { candidateId } = req.body;
 
   if (!candidateId) {
@@ -53,13 +54,30 @@ exports.postGenerateVote = (req, res, next) => {
     include: [{ model: ElectivePosition }, { model: Politic }],
   })
     .then((result) => {
+      const candidate = result.dataValues;
+
       Election.findOne({ where: { status: true } })
         .then((result) => {
           const election = result.dataValues;
-          console.log(election);
-          res.redirect("/vote");
+
+          Vote.create({
+            CitizenId: req.citizen.id,
+            CandidateId: candidateId,
+            PoliticId: candidate.PoliticId,
+            ElectivePositionId: candidate.ElectivePositionId,
+            ElectionId: election.id,
+          })
+            .then((result) => {
+              console.log(result);
+              res.redirect("/vote");
+            })
+            .catch((err) => console.error(err));
         })
         .catch((err) => console.error(err));
     })
     .catch((err) => console.error(err));
 };
+
+// exports.getEndElection = (req, res, next) => {
+  
+// };
