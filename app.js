@@ -16,6 +16,7 @@ const candidateRoute = require("./routes/candidate");
 const homeRoute = require("./routes/home");
 const authRoute = require("./routes/auth");
 const electionRoute = require("./routes/elections");
+const voteRoute = require("./routes/vote");
 
 //Models
 const citizen = require("./models/citizen");
@@ -62,7 +63,6 @@ app.set("view engine", "hbs");
 app.set("views", "views");
 
 // Middlewares
-
 app.use(
   session({ secret: "HJIIIHVVHVHIUG", resave: true, saveUninitialized: false })
 );
@@ -86,11 +86,31 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
+  if (!req.session) {
+    return next();
+  }
+  if (!req.session.citizen) {
+    return next();
+  }
+  citizen
+    .findByPk(req.session.citizen.id)
+    .then((citizen) => {
+      req.citizen = citizen;
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.isCitizenLogged = req.session.isCitizenLoggedIn;
   next();
 });
 
 app.use(homeRoute);
+app.use("/vote", voteRoute);
 app.use("/admin", citizenRoute);
 app.use("/admin", politicRoute);
 app.use("/admin", electivePositionRoute);
@@ -99,7 +119,7 @@ app.use("/admin", electionRoute);
 app.use(authRoute);
 app.use("/", errorController.get404);
 
-// Relationships
+// Relations
 candidate.belongsTo(politic, { constraint: true, onDelete: "RESTRICT" });
 politic.hasMany(candidate);
 
