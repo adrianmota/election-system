@@ -21,6 +21,7 @@ const voteRoute = require("./routes/vote");
 //Models
 const citizen = require("./models/citizen");
 const electivePosition = require("./models/electivePosition");
+
 const politic = require("./models/politic");
 const candidate = require("./models/candidate");
 const user = require("./models/user");
@@ -37,7 +38,9 @@ const port = 5000;
 const app = express();
 
 app.use("/img", express.static(path.join(__dirname, "img")));
+
 app.use(express.urlencoded({ extended: false }));
+
 const imageStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "img/politics");
@@ -48,7 +51,12 @@ const imageStorage = multer.diskStorage({
     cb(null, `${uuidv4()}.${extname}`);
   },
 });
+
 app.use(multer({ storage: imageStorage }).single("logoImg"));
+
+//utils
+
+const IsEqualFunction = require("./utils/helpers/compare");
 
 // View Engine Config
 app.engine(
@@ -57,6 +65,9 @@ app.engine(
     layoutsDir: "views/layouts",
     defaultLayout: "mainLayout",
     extname: "hbs",
+    helpers:{
+      compare : IsEqualFunction.EqualValue,
+    }
   })
 );
 app.set("view engine", "hbs");
