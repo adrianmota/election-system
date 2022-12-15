@@ -19,7 +19,7 @@ exports.getIndex = (req, res, next) => {
             module: "elections",
             election: election,
             hasElection: election.length > 0,
-            hasElectionActive : hasElectionActive,
+            hasElectionActive: hasElectionActive,
           });
         })
         .catch((err) => {
@@ -119,7 +119,7 @@ exports.getResult = (req, res, next) => {
         return;
       }
 
-      const vote = result.dataValues;     
+      const vote = result.dataValues;
 
       res.render("elections/index", {
         title: "Elections",
@@ -131,15 +131,15 @@ exports.getResult = (req, res, next) => {
     });
 };
 
-exports.createElection =  (req, res, next) => {
+exports.createElection = (req, res, next) => {
   let hasError = false;
   let errorMessage = "";
 
   const { name, dateRealization } = req.body;
-  
+
   if (!name || !dateRealization) {
     hasError = true;
-    errorMessage = "Todos los campos son obligatorios,"
+    errorMessage = "Todos los campos son obligatorios,";
   }
 
   console.log(errorMessage);
@@ -174,13 +174,12 @@ exports.createElection =  (req, res, next) => {
 
   const electionVM = {
     name: name,
-    dateRealization: dateRealization,
+    dateRealization: new Date(dateRealization).toLocaleDateString(),
     status: true,
   };
 
   Election.findOne({ where: { status: true } })
     .then((result) => {
-
       if (result) {
         console.log("Ya existe una eleccion activa");
         Election.findOne({ where: { status: true } })
@@ -213,47 +212,53 @@ exports.createElection =  (req, res, next) => {
 
       Election.create(electionVM)
         .then((result) => {
-
           const hasElectionActive = result.dataValues;
 
-          Candidate.findAll({where:{status:true},include:[{model:ElectivePosition},{model:Politic}]})
-          .then( (result)=>{
+          Candidate.findAll({
+            where: { status: true },
+            include: [{ model: ElectivePosition }, { model: Politic }],
+          })
+            .then((result) => {
+              let candidate = result.map((result) => result.dataValues);
 
-            let candidate = result.map((result) => result.dataValues);
+              for (let x = 0; candidate.length > x; x++) {
+                candidate[x].ElectivePosition =
+                  candidate[x].ElectivePosition.dataValues;
+                candidate[x].Politic = candidate[x].Politic.dataValues;
+              }
 
-            for(let x = 0; candidate.length > x;x++){
+              candidate = candidate.filter(
+                (props) =>
+                  props.ElectivePosition.status == true &&
+                  props.Politic.status == true
+              );
 
-              candidate[x].ElectivePosition = candidate[x].ElectivePosition.dataValues;
-              candidate[x].Politic = candidate[x].Politic.dataValues;
-            }
+              for (let y = 0; candidate.length > y; y++) {
+                const item = {
+                  fullName: `${candidate[y].firstName} ${candidate[y].lastName}`,
+                  namePolitic: candidate[y].Politic.name,
+                  nameElectivePosition: candidate[y].ElectivePosition.name,
+                  votes: 0,
+                  ElectionId: hasElectionActive.id,
+                  CandidateId: candidate[y].id,
+                  PoliticId: candidate[y].Politic.id,
+                  ElectivePositionId: candidate[y].ElectivePosition.id,
+                };
+                console.log(item);
+                ResultElection.create(item)
+                  .then((result) => {
+                    console.log(result.dataValues);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              }
 
-            candidate = candidate.filter(props=>props.ElectivePosition.status == true && 
-              props.Politic.status == true);            
-            
-            for(let y = 0; candidate.length > y ;y++){
-             const item = {           
-                fullName : `${candidate[y].firstName} ${candidate[y].lastName}`,     
-                namePolitic : candidate[y].Politic.name,
-                nameElectivePosition : candidate[y].ElectivePosition.name,
-                votes: 0,
-                ElectionId : hasElectionActive.id,
-                CandidateId : candidate[y].id,       
-                PoliticId : candidate[y].Politic.id,         
-                ElectivePositionId : candidate[y].ElectivePosition.id,
-              };
-              console.log(item);
-              ResultElection.create(item).then((result)=>{
-                console.log(result.dataValues );           
-              }).catch((err)=>{
-                console.log(err);
-              });
-            }
-
-            res.redirect("/admin/election");
-
-          }).catch((err)=>{
-            console.log(err);
-          })         
+              res.redirect("/admin/election");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         })
         .catch((err) => {
           console.log(err);
@@ -264,41 +269,11 @@ exports.createElection =  (req, res, next) => {
     });
 };
 
-exports.closedElection = (req,res,next)=>{
+exports.closedElection = (req, res, next) => {
+  const idElection = req.params.idElection;
 
-  const idElection = req.body.params.idElection;
-
-  if(!idElection){
-    Election.findOne({ where: { status: true } })      
-    .then((result) => {
-      const hasElectionActive = result ? true : false;
-      Election.findAll()
-        .then((result) => {
-          const election = result.map((result) => result.dataValues);
-          res.render("elections/index", {
-            title: "Elections",
-            module: "elections",
-            election: election,
-            hasElection: election.length > 0,
-            hasElectionActive : hasElectionActive,
-            hasError:true,
-            errorMessage:"Los datos proporcionados son incorrectos."
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-    return;
-  }
-
-
-  Election.findOne({where:{id:idElection}}).then((result)=>{
-    if(!result){
-      Election.findOne({ where: { status: true } })      
+  if (!idElection) {
+    Election.findOne({ where: { status: true } })
       .then((result) => {
         const hasElectionActive = result ? true : false;
         Election.findAll()
@@ -309,9 +284,9 @@ exports.closedElection = (req,res,next)=>{
               module: "elections",
               election: election,
               hasElection: election.length > 0,
-              hasElectionActive : hasElectionActive,
-              hasError:true,
-              errorMessage:"No se ha podido encontrar la election seleccionada"
+              hasElectionActive: hasElectionActive,
+              hasError: true,
+              errorMessage: "Los datos proporcionados son incorrectos.",
             });
           })
           .catch((err) => {
@@ -321,48 +296,79 @@ exports.closedElection = (req,res,next)=>{
       .catch((err) => {
         console.log(err);
       });
-      return;
-    }
+    return;
+  }
 
-    const electionVM = result.dataValues;
-
-    if(!electionVM.status){
-        Election.findOne({ where: { status: true } })      
-        .then((result) => {
-          const hasElectionActive = result ? true : false;
-          Election.findAll()
-            .then((result) => {
-              const election = result.map((result) => result.dataValues);
-              res.render("elections/index", {
-                title: "Elections",
-                module: "elections",
-                election: election,
-                hasElection: election.length > 0,
-                hasElectionActive : hasElectionActive,
-                hasError:true,
-                errorMessage:"Esta eleccion ya fue finalizada."
+  Election.findOne({ where: { id: idElection } })
+    .then((result) => {
+      if (!result) {
+        Election.findOne({ where: { status: true } })
+          .then((result) => {
+            const hasElectionActive = result ? true : false;
+            Election.findAll()
+              .then((result) => {
+                const election = result.map((result) => result.dataValues);
+                res.render("elections/index", {
+                  title: "Elections",
+                  module: "elections",
+                  election: election,
+                  hasElection: election.length > 0,
+                  hasElectionActive: hasElectionActive,
+                  hasError: true,
+                  errorMessage:
+                    "No se ha podido encontrar la eleccion seleccionada",
+                });
+              })
+              .catch((err) => {
+                console.log(err);
               });
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        return;
+      }
+
+      const electionVM = result.dataValues;
+
+      if (!electionVM.status) {
+        Election.findOne({ where: { status: true } })
+          .then((result) => {
+            const hasElectionActive = result ? true : false;
+            Election.findAll()
+              .then((result) => {
+                const election = result.map((result) => result.dataValues);
+                res.render("elections/index", {
+                  title: "Elections",
+                  module: "elections",
+                  election: election,
+                  hasElection: election.length > 0,
+                  hasElectionActive: hasElectionActive,
+                  hasError: true,
+                  errorMessage: "Esta eleccion ya fue finalizada.",
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        return;
+      }
+
+      electionVM.status = false;
+
+      Election.update(electionVM)
+        .then((result) => {
+          res.redirect("/admin/election");
         })
         .catch((err) => {
           console.log(err);
         });
-        return;
-      
-    }
-
-    electionVM.status = false;
-
-    Election.update(electionVM).then((result)=>{
-      res.redirect("/admin/election");
-    }).catch((err)=>{
-      console.log(err);
     })
-
-  }).catch((err)=>{
-  console.log(err);
-  });
-}
+    .catch((err) => {
+      console.log(err);
+    });
+};
