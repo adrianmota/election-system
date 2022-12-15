@@ -173,7 +173,7 @@ electivePosition.hasMany(resultElection);
 userDefault.createUser();
 
 sequelize
-  .sync(/*{ force: true }*/)
+  .sync(/*{force:true}*/)
   .then((result) => {
     app.listen(port, hostname, () =>
       console.log(`App running at http://${hostname}:${port}/`)

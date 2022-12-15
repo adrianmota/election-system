@@ -1,13 +1,10 @@
 <main class="m-4">
-  <div class="row mx-auto">
-    <div class="col-6">
-      <h4>Elecciones</h4>
-    </div>
+  <div class="row mx-auto">      
     {{#if hasElectionActive}}{{else}}
-      <div class="col-6 text-end">
+      <div class="col-12">
         <button
           type="buttton"
-          class="btn btn-primary btn-sm"
+          class="btn btn-primary w-100"
           data-bs-toggle="modal"
           data-bs-target="#save"
         >
@@ -15,8 +12,14 @@
         </button>
       </div>
     {{/if}}
-  </div>
-
+  </div>  
+    {{#if hasError}}
+        <div class="col-12 mx-auto my-2">
+            <div class="alert alert-danger text-center" role="alert">
+                <strong>Error:</strong> {{errorMessage}}                
+            </div>
+        </div>
+    {{/if}}
   {{! Create Modal }}
   <div
     class="modal fade"
@@ -80,7 +83,7 @@
     </div>
   </div>
   {{! Create Modal }}
-
+  {{#if hasElection}}  
   <div class="row mt-3">
     <div class="col-12">
       <table class="table table-dark table-striped">
@@ -124,4 +127,15 @@
       </table>
     </div>
   </div>
+  {{else}}
+  <div class="col-12">
+    <div class="col-12">
+        <section class="col-6 bg-danger rounded-3 text-white text-center mx-auto p-4 mt-5">
+            <h3 class="display-8 fw-normal text-uppercase fw-bolder m-0">
+                No se han creado elecciones todavia.
+            </h3>
+        </section>
+    </div>
+  </div>
+  {{/if}}
 </main>
