@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Citizen = require("../models/citizen");
 const bcrypt = require("bcryptjs");
 
 exports.GetLogin = (req, res, next) => {
@@ -81,19 +82,19 @@ exports.PostLoginCitizen = (req, res, next) => {
   const documentId = req.body.documentId;
 
   if (!documentId) {
-    res.render("auth/login", {
+    res.render("home/index", {
       pageTitle: "Login",
       module: "Login",
       hasError: true,
-      errorMessage: "Ingrese su cedula.",
+      errorMessage: "Ingrese su cédula.",
     });
     return;
   }
 
-  User.findOne({ where: { username: username } })
+  Citizen.findOne({ where: { documentId } })
     .then((citizen) => {
       if (!citizen) {
-        res.render("auth/login", {
+        res.render("home/index", {
           pageTitle: "Login",
           module: "Login",
           hasError: true,
@@ -106,7 +107,7 @@ exports.PostLoginCitizen = (req, res, next) => {
       req.session.citizen = citizen;
       return req.session.save((err) => {
         console.log(err);
-        res.redirect("/");
+        res.redirect("/vote");
       });
     })
     .catch((err) => {
