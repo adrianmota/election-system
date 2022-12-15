@@ -6,14 +6,13 @@
     </div>
 
     {{#if hasError}}
-        <div class="col-6 mx-auto my-5">
+        <div class="col-6 mx-auto my-2">
             <div class="alert alert-danger text-center" role="alert">
                 <strong>Error:</strong> {{errorMessage}}
-                <a href="/admin/candidate" class="btn btn-sm btn-primary mt-3">Ver candidatos</a>
             </div>
         </div>
     {{/if}}
-
+<div class="col-12">
     {{!-- Create Modal --}}
     <div class="modal fade" id="save" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -29,7 +28,7 @@
                         <section>
                             <div class="form-group d-flex flex-column gap-2">
                                 <label for="profilePhoto">Foto de Perfil</label>
-                                <input type="file" id="profilePhoto" class="form-control" name="profilePhoto"
+                                <input type="file" id="profilePhoto" class="form-control" name="logoImg"
                                     placeholder="profilePhoto" required />
                             </div>
                             <div class="form-floating my-3">
@@ -45,7 +44,7 @@
                             <div class="form-floating d-flex flex-column gap-2 my-3">
                                 <select class="form-select" name="politicId" id="politicId">
 
-                                    <option selected>Selecciona un partido...</option>
+                                    <option value="0" selected>Selecciona un partido...</option>
 
                                     {{#each politic as |politic|}}
                                     {{#if (compare politic.id ../candidate.politicId )}}
@@ -60,7 +59,7 @@
                             <div class="form-floating d-flex flex-column gap-2 my-3">
                                 <select class="form-select" name="electivePositionId" id="electivePositionId">
 
-                                    <option selected>Selecciona un posición electiva...</option>
+                                    <option value="0" selected>Selecciona un posición electiva...</option>
 
                                     {{#each electivePosition as |electivePosition|}}
                                     {{#if (compare electivePosition.id ../candidate.electivePositionId )}}
@@ -88,22 +87,21 @@
     {{#if hasCandidate}}
     
     {{#each candidate as |candidate|}}
-
     <section class="col-5 my-4 mx-auto">
         <div class="card text-white border-0 shadow">
             <section class="card-header bg-primary w-100 d-flex justify-content-center fw-bold text-uppercase">
-                {{candidate.name}}
+                {{candidate.firstName}} {{candidate.lastName}}
             </section>
             <section class="card-body">
                 <img src="{{candidate.ProfilePhoto}}" class="card-img-top img-fluid" style="height: 250px; object-fit: cover;" alt="politic">
             </section>
             <section class="card-footer p-2">
                 <div class="d-flex flex-column gap-2">
-                    <section>
-                        <p>{{candidate.politic.dataValues.name}}</p>
+                    <section class="text-dark">
+                        <p>{{candidate.Politic.dataValues.name}}</p>
                     </section>
-                    <section>
-                        <p>{{candidate.electivePosition.dataValues.name}}</p>
+                    <section class="text-dark">
+                        <p>{{candidate.ElectivePosition.dataValues.name}}</p>
                     </section>
                 </div>
                 <div class="d-flex gap-2 p-2 mt-2 rounded w-100">
@@ -138,30 +136,32 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form enctype="multipart/form-data" method="POST" action="/admin/editCandidate">
+                    <input hidden value="{{candidate.id}}" name="id"/>
                     <div class="modal-body">
-                        <section>
+                        <section>                            
                             <div class="form-group d-flex flex-column gap-2">
                                 <label for="LogoImg">Foto de Perfil</label>
-                                <input type="file" id="profilePhoto" class="form-control" name="profilePhoto"
-                                    placeholder="profilePhoto" required />
+                                <input type="file" id="profilePhoto" class="form-control" name="logoImg"
+                                    placeholder="profilePhoto"  />
                             </div>
                             <div class="form-floating my-3">
-                                <input type="text" class="form-control" id="firstName" name="firstName"
+                                <input type="text" class="form-control" value="{{candidate.firstName}}" id="firstName" name="firstName"
                                     placeholder="firstName">
                                 <label for="firstName" class="col-form-label">Nombre</label>
                             </div>
                             <div class="form-floating my-3">
-                                <input type="text" class="form-control" id="lastName" name="lastName"
+                                <input type="text" class="form-control" value="{{candidate.lastName}}" id="lastName" name="lastName"
                                     placeholder="lastName">
                                 <label for="lastName" class="col-form-label">Apellido</label>
                             </div>
                             <div class="form-floating d-flex flex-column gap-2">
                                 <select class="form-select" name="politicId" id="politicId">
 
-                                    {{#each politic as |politic|}}
-                                    {{#if (compare politic.id ../candidate.politicId )}}
+                                    {{#each ../politic as |politic|}}
+                                    {{#if (compare politic.id candidate.PoliticId )}}                                    
                                     <option selected value="{{politic.id}}">{{politic.name}}</option>
                                     {{else}}
+                                    <option  value="{{politic.id}}">{{politic.name}}</option>
                                     {{/if}}
                                     {{/each}}
 
@@ -171,10 +171,11 @@
                             <div class="form-floating d-flex flex-column gap-2">
                                 <select class="form-select" name="electivePositionId" id="electivePositionId">
                                     
-                                    {{#each electivePosition as |electivePosition|}}
+                                    {{#each ../electivePosition as |electivePosition|}}
                                     {{#if (compare electivePosition.id ../candidate.electivePositionId )}}
                                     <option selected value="{{electivePosition.id}}">{{electivePosition.name}}</option>
                                     {{else}}
+                                    <option value="{{electivePosition.id}}">{{electivePosition.name}}</option>
                                     {{/if}}
                                     {{/each}}
 
@@ -237,4 +238,5 @@
     {{/if}}
 
     {{/if}}
+    </div>
 </div>

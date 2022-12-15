@@ -53,22 +53,24 @@ exports.createCandidatePost = (req, res, next) => {
   const candidateVM = {
     firstName: firstName,
     lastName: lastName,
-    profilePhoto: profilePhoto,
+    ProfilePhoto: `/${profilePhoto.path}`,
     status: true,
-    politicId: politicId,
-    electivePositionId: electivePositionId,
+    PoliticId: politicId,
+    ElectivePositionId: electivePositionId,
   };
+
 
   if (
     !firstName ||
     !lastName ||
-    !politicId ||
-    !electivePositionId ||
+    politicId == 0 ||
+    electivePositionId == 0 ||
     !profilePhoto
   ) {
     hasError = true;
     errorMessage = "Todos los campos son obligatorios";
   }
+
   console.log(errorMessage);
 
   if (hasError) {
@@ -220,10 +222,9 @@ exports.createCandidatePost = (req, res, next) => {
           return;
         }
 
-        Candidate.findOne({ PoliticId: candidateVM.politicId, ElectivePositionId:candidateVM.electivePositionId })
+        Candidate.findOne({where:{ PoliticId: candidateVM.PoliticId, ElectivePositionId:candidateVM.ElectivePositionId }})
           .then((result) => {
             if (result) {
-              if (hasError) {
                 Candidate.findAll({
                   include: [{ model: Politic }, { model: ElectivePosition }],
                 })
@@ -268,15 +269,15 @@ exports.createCandidatePost = (req, res, next) => {
                     console.log(err);
                   });
                 return;
-              }
+            }
               Candidate.create(candidateVM)
                 .then((result) => {
                   res.redirect("/admin/candidate");
                 })
                 .catch((err) => {
+                  console.log("Create erro");
                   console.log(err);
-                });
-            }
+                });            
           })
           .catch((err) => {
             console.log(err);
@@ -291,29 +292,28 @@ exports.createCandidatePost = (req, res, next) => {
   });
 };
 
-exports.editCandidatePost = (req, res, next) => {
-  let hasError = false;
+exports.editCandidatePost = (req, res, next) => {  
   let errorMessage = "";
-
+  let hasError = false;
+  
   const { id, firstName, lastName, politicId, electivePositionId } = req.body;
-  const profilePhoto = req.file;
 
   const candidateVM = {
-    id: id,
+    id:id,
     firstName: firstName,
     lastName: lastName,
-    profilePhoto: profilePhoto,
-    status: true,
-    politicId: politicId,
-    electivePositionId: electivePositionId,
+    ProfilePhoto: req.file,
+    status:true,
+    PoliticId: politicId,
+    ElectivePositionId:electivePositionId,
   };
 
   if (
+    !id ||
     !firstName ||
     !lastName ||
-    !politicId ||
-    !electivePositionId ||
-    !profilePhoto
+    !politicId||
+    !electivePositionId
   ) {
     hasError = true;
     errorMessage = "Todos los campos son obligatorios";
@@ -370,6 +370,9 @@ exports.editCandidatePost = (req, res, next) => {
         hasError = true;
         errorMessage = "Este candidato no existe.";
       }
+
+      candidateVM.ProfilePhoto = candidateVM.ProfilePhoto ? `/${candidateVM.ProfilePhoto.path}`: result.dataValues.ProfilePhoto;
+      candidateVM.status = result.dataValues.status;
       console.log(errorMessage);
       if (hasError) {
         Candidate.findAll({
@@ -519,10 +522,10 @@ exports.editCandidatePost = (req, res, next) => {
                 return;
               }
 
-              Candidate.findOne({ where: { PoliticId: candidateVM.politicId, ElectivePositionId:candidateVM.electivePositionId} })
-                .then((result) => {
+              Candidate.findOne({ where: { PoliticId: candidateVM.PoliticId, ElectivePositionId:candidateVM.ElectivePositionId} })
+                .then((result) => {                  
+                  if(result){                  
                   if (result.dataValues.id != candidateVM.id) {
-                    if (hasError) {
                       Candidate.findAll({
                         include: [
                           { model: Politic },
@@ -576,17 +579,17 @@ exports.editCandidatePost = (req, res, next) => {
                         });
                       return;
                     }
-                    Candidate.update(
-                      { candidateVM },
-                      { where: { id: candidateVM.id } }
-                    )
+                  }
+                  console.log(candidateVM);
+                    Candidate.update({ candidateVM },{ where: { id } })
                       .then((result) => {
+                        
                         res.status(302).redirect("/admin/candidate");
                       })
                       .catch((err) => {
                         console.log(err);
                       });
-                  }
+                  
                 })
                 .catch((err) => {
                   console.log(err);
