@@ -25,13 +25,12 @@ exports.getCandidates = (req, res, next) => {
     return res.redirect("/vote");
   }
 
-  ElectivePosition.findAll({
-    where: { id: electivePositionId },
-    include: [{ model: Candidate }, { model: Politic }],
+  Candidate.findAll({
+    where: { ElectivePositionId: electivePositionId },
+    include: [{ model: ElectivePosition }, { model: Politic }],
   })
     .then((result) => {
-      const candidates = result.Candidates.map((c) => c.dataValues);
-      console.log(candidates);
+      const candidates = result.map((result) => result.dataValues);
       res.render("vote/candidates", {
         title: "Candidatos",
         candidates,
