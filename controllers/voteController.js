@@ -20,7 +20,6 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCandidates = (req, res, next) => {
   const { electivePositionId } = req.params;
-  console.log(electivePositionId);
 
   if (!electivePositionId) {
     return res.redirect("/vote");
@@ -32,7 +31,6 @@ exports.getCandidates = (req, res, next) => {
   })
     .then((result) => {
       const candidates = result.Candidates;
-      console.log(candidates);
       res.render("vote/candidates", {
         title: "Candidatos",
         candidates,
@@ -43,11 +41,7 @@ exports.getCandidates = (req, res, next) => {
 };
 
 exports.postCreate = (req, res, next) => {
-  const { candidateId } = req.body;
-
-  if (!candidateId) {
-    res.redirect("/vote");
-  }
+  let { candidateId } = req.body;
 
   Candidate.findOne({
     where: { id: candidateId },
@@ -59,6 +53,7 @@ exports.postCreate = (req, res, next) => {
       Election.findOne({ where: { status: true } })
         .then((result) => {
           const election = result.dataValues;
+          candidateId = candidateId ? candidateId : null;
 
           Vote.create({
             CitizenId: req.citizen.id,
@@ -78,6 +73,6 @@ exports.postCreate = (req, res, next) => {
     .catch((err) => console.error(err));
 };
 
-// exports.getEndElection = (req, res, next) => {
+exports.getEndElection = (req, res, next) => {
   
-// };
+};
