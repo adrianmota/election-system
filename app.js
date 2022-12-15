@@ -21,6 +21,7 @@ const voteRoute = require("./routes/vote");
 //Models
 const citizen = require("./models/citizen");
 const electivePosition = require("./models/electivePosition");
+
 const politic = require("./models/politic");
 const candidate = require("./models/candidate");
 const user = require("./models/user");
