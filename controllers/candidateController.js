@@ -9,11 +9,11 @@ exports.getIndex = (req, res, next) => {
     .then((result) => {
       const candidate = result.map((result) => result.dataValues);
 
-      Politic.findAll({ where: { status: true } })
+      Politic.findAll()
         .then((result) => {
           const politic = result.map((result) => result.dataValues);
 
-          ElectivePosition.findAll({ where: { status: true } })
+          ElectivePosition.findAll()
             .then((result) => {
               const electivePosition = result.map(
                 (result) => result.dataValues
@@ -79,11 +79,11 @@ exports.createCandidatePost = (req, res, next) => {
       .then((result) => {
         const candidate = result.map((result) => result.dataValues);
 
-        Politic.findAll({ where: { status: true } })
+        Politic.findAll()
           .then((result) => {
             const politic = result.map((result) => result.dataValues);
 
-            ElectivePosition.findAll({ where: { status: true } })
+            ElectivePosition.findAll()
               .then((result) => {
                 const electivePosition = result.map(
                   (result) => result.dataValues
@@ -131,11 +131,11 @@ exports.createCandidatePost = (req, res, next) => {
         .then((result) => {
           const candidate = result.map((result) => result.dataValues);
 
-          Politic.findAll({ where: { status: true } })
+          Politic.findAll()
             .then((result) => {
               const politic = result.map((result) => result.dataValues);
 
-              ElectivePosition.findAll({ where: { status: true } })
+              ElectivePosition.findAll()
                 .then((result) => {
                   const electivePosition = result.map(
                     (result) => result.dataValues
@@ -184,11 +184,11 @@ exports.createCandidatePost = (req, res, next) => {
             .then((result) => {
               const candidate = result.map((result) => result.dataValues);
 
-              Politic.findAll({ where: { status: true } })
+              Politic.findAll()
                 .then((result) => {
                   const politic = result.map((result) => result.dataValues);
 
-                  ElectivePosition.findAll({ where: { status: true } })
+                  ElectivePosition.findAll()
                     .then((result) => {
                       const electivePosition = result.map(
                         (result) => result.dataValues
@@ -225,6 +225,7 @@ exports.createCandidatePost = (req, res, next) => {
           where: {
             PoliticId: candidateVM.PoliticId,
             ElectivePositionId: candidateVM.ElectivePositionId,
+            status:true,
           },
         })
           .then((result) => {
@@ -235,11 +236,11 @@ exports.createCandidatePost = (req, res, next) => {
                 .then((result) => {
                   const candidate = result.map((result) => result.dataValues);
 
-                  Politic.findAll({ where: { status: true } })
+                  Politic.findAll()
                     .then((result) => {
                       const politic = result.map((result) => result.dataValues);
 
-                      ElectivePosition.findAll({ where: { status: true } })
+                      ElectivePosition.findAll()
                         .then((result) => {
                           const electivePosition = result.map(
                             (result) => result.dataValues
@@ -256,7 +257,7 @@ exports.createCandidatePost = (req, res, next) => {
                             hasElectivePosition: electivePosition.length > 0,
                             hasError: true,
                             errorMessage:
-                              "Ya existe un candidato de su partido en esta posicion.",
+                              "Ya existe un candidato activo de su partido en esta posicion.",
                           });
                         })
                         .catch((err) => {
@@ -324,11 +325,11 @@ exports.editCandidatePost = (req, res, next) => {
       .then((result) => {
         const candidate = result.map((result) => result.dataValues);
 
-        Politic.findAll({ where: { status: true } })
+        Politic.findAll()
           .then((result) => {
             const politic = result.map((result) => result.dataValues);
 
-            ElectivePosition.findAll({ where: { status: true } })
+            ElectivePosition.findAll()
               .then((result) => {
                 const electivePosition = result.map(
                   (result) => result.dataValues
@@ -381,11 +382,11 @@ exports.editCandidatePost = (req, res, next) => {
           .then((result) => {
             const candidate = result.map((result) => result.dataValues);
 
-            Politic.findAll({ where: { status: true } })
+            Politic.findAll()
               .then((result) => {
                 const politic = result.map((result) => result.dataValues);
 
-                ElectivePosition.findAll({ where: { status: true } })
+                ElectivePosition.findAll()
                   .then((result) => {
                     const electivePosition = result.map(
                       (result) => result.dataValues
@@ -432,11 +433,11 @@ exports.editCandidatePost = (req, res, next) => {
               .then((result) => {
                 const candidate = result.map((result) => result.dataValues);
 
-                Politic.findAll({ where: { status: true } })
+                Politic.findAll()
                   .then((result) => {
                     const politic = result.map((result) => result.dataValues);
 
-                    ElectivePosition.findAll({ where: { status: true } })
+                    ElectivePosition.findAll()
                       .then((result) => {
                         const electivePosition = result.map(
                           (result) => result.dataValues
@@ -483,13 +484,13 @@ exports.editCandidatePost = (req, res, next) => {
                   .then((result) => {
                     const candidate = result.map((result) => result.dataValues);
 
-                    Politic.findAll({ where: { status: true } })
+                    Politic.findAll()
                       .then((result) => {
                         const politic = result.map(
                           (result) => result.dataValues
                         );
 
-                        ElectivePosition.findAll({ where: { status: true } })
+                        ElectivePosition.findAll()
                           .then((result) => {
                             const electivePosition = result.map(
                               (result) => result.dataValues
@@ -522,7 +523,79 @@ exports.editCandidatePost = (req, res, next) => {
                 return;
               }
 
-              
+              Candidate.findOne({
+                where: {
+                  PoliticId: candidateVM.PoliticId,
+                  ElectivePositionId: candidateVM.ElectivePositionId,
+                  status: true,
+                },
+              })
+                .then((result) => {
+                  if (result) {
+                    if (result.dataValues.id != candidateVM.id) {
+                      Candidate.findAll({
+                        include: [
+                          { model: Politic },
+                          { model: ElectivePosition },
+                        ],
+                      })
+                        .then((result) => {
+                          const candidate = result.map(
+                            (result) => result.dataValues
+                          );
+
+                          Politic.findAll()
+                            .then((result) => {
+                              const politic = result.map(
+                                (result) => result.dataValues
+                              );
+
+                              ElectivePosition.findAll()
+                                .then((result) => {
+                                  const electivePosition = result.map(
+                                    (result) => result.dataValues
+                                  );
+
+                                  res.render("candidate/index", {
+                                    pageTitle: "Candidate",
+                                    module: "candidate",
+                                    hasCandidate: candidate.length > 0,
+                                    candidate: candidate,
+                                    politic: politic,
+                                    hasPolitic: politic.length > 0,
+                                    electivePosition: electivePosition,
+                                    hasElectivePosition:
+                                      electivePosition.length > 0,
+                                    hasError: true,
+                                    errorMessage:
+                                      "Ya existe un candidato activo de este partido.",
+                                  });
+                                })
+                                .catch((err) => {
+                                  console.log(err);
+                                });
+                            })
+                            .catch((err) => {
+                              console.log(err);
+                            });
+                        })
+                        .catch((err) => {
+                          console.log(err);
+                        });
+                      return;
+                    }
+                  }
+                  Candidate.update(candidateVM, { where: { id: id } })
+                    .then((result) => {
+                      res.status(302).redirect("/admin/candidate");
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
             })
             .catch((err) => {
               console.log(err);
@@ -559,11 +632,11 @@ exports.changeStatusCandidate = (req, res, next) => {
           .then((result) => {
             const candidate = result.map((result) => result.dataValues);
 
-            Politic.findAll({ where: { status: true } })
+            Politic.findAll()
               .then((result) => {
                 const politic = result.map((result) => result.dataValues);
 
-                ElectivePosition.findAll({ where: { status: true } })
+                ElectivePosition.findAll()
                   .then((result) => {
                     const electivePosition = result.map(
                       (result) => result.dataValues
@@ -596,60 +669,71 @@ exports.changeStatusCandidate = (req, res, next) => {
         return;
       }
 
-      Candidate.findAll({where:{PoliticId:candidateVM.PoliticId,status:true}})
-      .then((result)=>{
-        if(result){
-          hasError = true;
-          errorMessage = "Ya hay un miembro de ese partido activo en esta posicion."
-          Candidate.findAll({
-            include: [{ model: Politic }, { model: ElectivePosition }],
-          })
-            .then((result) => {
-              const candidate = result.map((result) => result.dataValues);
-  
-              Politic.findAll({ where: { status: true } })
-                .then((result) => {
-                  const politic = result.map((result) => result.dataValues);
-  
-                  ElectivePosition.findAll({ where: { status: true } })
-                    .then((result) => {
-                      const electivePosition = result.map(
-                        (result) => result.dataValues
-                      );
-  
-                      res.render("candidate/index", {
-                        pageTitle: "Candidate",
-                        module: "candidate",
-                        hasCandidate: candidate.length > 0,
-                        candidate: candidate,
-                        politic: politic,
-                        hasPolitic: politic.length > 0,
-                        electivePosition: electivePosition,
-                        hasElectivePosition: electivePosition.length > 0,
-                        hasError: hasError,
-                        errorMessage: errorMessage,
+      Candidate.findOne({
+        where: {
+          PoliticId: candidateVM.PoliticId,
+          ElectivePositionId: candidateVM.ElectivePositionId,
+          status: true,
+        },
+      })
+        .then((result) => {
+          if(!candidateVM.status)
+          {
+          if (result) {
+            hasError = true;
+            errorMessage =
+              "Ya hay un miembro de ese partido activo en esta posicion.";
+            Candidate.findAll({
+              include: [{ model: Politic }, { model: ElectivePosition }],
+            })
+              .then((result) => {
+                const candidate = result.map((result) => result.dataValues);
+
+                Politic.findAll()
+                  .then((result) => {
+                    const politic = result.map((result) => result.dataValues);
+
+                    ElectivePosition.findAll()
+                      .then((result) => {
+                        const electivePosition = result.map(
+                          (result) => result.dataValues
+                        );
+
+                        res.render("candidate/index", {
+                          pageTitle: "Candidate",
+                          module: "candidate",
+                          hasCandidate: candidate.length > 0,
+                          candidate: candidate,
+                          politic: politic,
+                          hasPolitic: politic.length > 0,
+                          electivePosition: electivePosition,
+                          hasElectivePosition: electivePosition.length > 0,
+                          hasError: hasError,
+                          errorMessage: errorMessage,
+                        });
+                      })
+                      .catch((err) => {
+                        console.log(err);
                       });
-                    })
-                    .catch((err) => {
-                      console.log(err);
-                    });
-                })
-                .catch((err) => {
-                  console.log(err);
-                });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+            return;
+          }
+        }
+          candidateVM.status = !candidateVM.status;
+          Candidate.update(candidateVM, { where: { id: candidateId } })
+            .then((result) => {
+              return res.redirect("/admin/candidate");
             })
             .catch((err) => {
               console.log(err);
             });
-          return;
-        }
-      }).catch((err)=>{
-        console.log(err);
-      })
-      candidateVM.status = !candidateVM.status;
-      Candidate.update(candidateVM, { where: { id:candidateId } })
-        .then((result) => {
-          return res.redirect("/admin/candidate");
         })
         .catch((err) => {
           console.log(err);
