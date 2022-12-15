@@ -9,7 +9,7 @@ exports.getIndex = (req, res, next) => {
   ElectivePosition.findAll({ where: { status: true } })
     .then((result) => {
       const electivePositions = result.map((result) => result.dataValues);
-      res.render("home/index", {
+      res.render("vote/index", {
         title: "Votos",
         electivePositions,
         hasElectivePositions: electivePositions.length > 0,
@@ -25,12 +25,12 @@ exports.getCandidates = (req, res, next) => {
     return res.redirect("/vote");
   }
 
-  ElectivePosition.findOne({
-    where: { id: electivePositionId },
-    include: [{ model: Candidate }],
+  Candidate.findAll({
+    where: { ElectivePositionId: electivePositionId },
+    include: [{ model: ElectivePosition }, { model: Politic }],
   })
     .then((result) => {
-      const candidates = result.Candidates;
+      const candidates = result.map((result) => result.dataValues);
       res.render("vote/candidates", {
         title: "Candidatos",
         candidates,
@@ -73,6 +73,4 @@ exports.postCreate = (req, res, next) => {
     .catch((err) => console.error(err));
 };
 
-exports.getEndElection = (req, res, next) => {
-  
-};
+exports.getEndElection = (req, res, next) => {};
