@@ -335,7 +335,7 @@ exports.createElection = (req, res, next) => {
 
                 if (countCandidate.length < 2) {
                   hasError = true;
-                  errorMessage = `Para realizar una eleccion se necesitan al menos dos candidatos activos en el puesto ${electivePositionActives[y].name}`;
+                  errorMessage = `Para realizar una eleccion se necesitan al menos dos candidatos activos en el puesto ${electivePositionActives[y].name} y que sus respectivos partidos tambien lo esten.`;
                 }
               }
 

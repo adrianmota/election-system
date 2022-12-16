@@ -117,7 +117,7 @@ exports.createCandidatePost = (req, res, next) => {
   }
 
   Politic.findOne({ where: { id: politicId } }).then((result) => {
-    if (!result.dataValues.status) {
+    if (!result) {
       hasError = true;
       errorMessage = "Este partido no esta disponible.";
     }
@@ -170,7 +170,7 @@ exports.createCandidatePost = (req, res, next) => {
 
     ElectivePosition.findOne({ where: { id: electivePositionId } })
       .then((result) => {
-        if (!result.dataValues.status) {
+        if (!result) {
           hasError = true;
           errorMessage = "Este puesto electivo no esta disponible.";
         }
