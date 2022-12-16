@@ -91,7 +91,7 @@ exports.getCandidates = (req, res, next) => {
   }
 
   Candidate.findAll({
-    where: { ElectivePositionId: electivePositionId },
+    where: { ElectivePositionId: electivePositionId, status: true },
     include: [{ model: ElectivePosition }, { model: Politic }],
   })
     .then((result) => {
