@@ -65,9 +65,10 @@ app.engine(
     layoutsDir: "views/layouts",
     defaultLayout: "mainLayout",
     extname: "hbs",
-    helpers:{
-      compare : IsEqualFunction.EqualValue,
-    }
+    helpers: {
+      compare: IsEqualFunction.EqualValue,
+      idIsNull: IsEqualFunction.idIsNull,
+    },
   })
 );
 app.set("view engine", "hbs");
@@ -167,7 +168,10 @@ candidate.hasMany(resultElection);
 resultElection.belongsTo(politic, { constraint: true, onDelete: "RESTRICT" });
 politic.hasMany(resultElection);
 
-resultElection.belongsTo(electivePosition, { constraint: true, onDelete: "RESTRICT" });
+resultElection.belongsTo(electivePosition, {
+  constraint: true,
+  onDelete: "RESTRICT",
+});
 electivePosition.hasMany(resultElection);
 
 userDefault.createUser();

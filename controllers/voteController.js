@@ -10,7 +10,7 @@ exports.getIndex = (req, res, next) => {
   if (!req.citizen.dataValues.status) {
     return res.render("vote/index", {
       title: "Votos",
-      citizenIsNotActive: true
+      citizenIsNotActive: true,
     });
   }
 
@@ -50,6 +50,25 @@ exports.getCandidates = (req, res, next) => {
   })
     .then((result) => {
       const candidates = result.map((result) => result.dataValues);
+      const none = {
+        id: null,
+        firstname: "Ninguno",
+        lastname: "",
+        ElectivePosition: {
+          dataValues: {
+            id: candidates[0].ElectivePosition.dataValues.id,
+            name: "",
+          },
+        },
+        Politic: {
+          dataValues: {
+            id: candidates[0].Politic.dataValues.id,
+            name: "",
+          },
+        },
+      };
+      candidates.unshift(none);
+
       res.render("vote/candidates", {
         title: "Candidatos",
         candidates,
@@ -60,7 +79,27 @@ exports.getCandidates = (req, res, next) => {
 };
 
 exports.postCreate = (req, res, next) => {
-  let { candidateId } = req.body;
+  let { candidateId, electivePositionId, politicId } = req.body;
+
+  if (!String(candidateId) == "null") {
+    Election.findOne({ where: { status: true } })
+      .then((result) => {
+        const election = result.dataValues;
+
+        Vote.create({
+          CitizenId: req.citizen.dataValues.id,
+          CandidateId: null,
+          PoliticId: politicId,
+          ElectivePositionId: electivePositionId,
+          ElectionId: election.id,
+        })
+          .then((result) => {
+            res.redirect("/vote");
+          })
+          .catch((err) => console.error(err));
+      })
+      .catch((err) => console.error(err));
+  }
 
   Candidate.findOne({
     where: { id: candidateId },

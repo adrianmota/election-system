@@ -49,6 +49,11 @@
                   Votar
                 </button>
 
+                {{#if (idIsNull candidate.id)}}
+                  <input type="hidden" name="politicId" value="{{candidate.ElectivePosition.dataValues.id}}">
+                  <input type="hidden" name="electivePositionId" value="{{candidate.Politic.dataValues.id}}">
+                {{/if}}
+
                 <input type="hidden" name="candidateId" value="{{candidate.id}}">
               </section>
             </div>
