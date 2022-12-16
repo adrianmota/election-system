@@ -9,7 +9,8 @@ router.get(
   isCitizenAuth,
   voteController.getCandidates
 );
-router.post("/createVote", isCitizenAuth, voteController.postCreate);
 router.get("/end", isCitizenAuth, voteController.getEndVoteView);
+router.post("/createVote", isCitizenAuth, voteController.postCreate);
+router.post("/end", isCitizenAuth, voteController.postEndVotation);
 
 module.exports = router;

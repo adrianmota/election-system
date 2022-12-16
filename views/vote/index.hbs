@@ -3,8 +3,16 @@
     <div class="col-6 mt-4">
       <h4>Puestos Electivos</h4>
     </div>
-    <div class="col-6 text-end mt-4">
-      <a href="/" class="btn btn-danger btn-sm w-25">
+    <div
+      class="col-6 d-flex justify-content-end align-items-center gap-1 text-end mt-4"
+    >
+      <form method="POST" action="/vote/end">
+        <button
+          type="submit"
+          class="btn btn-success btn-sm px-3"
+        >Finalizar</button>
+      </form>
+      <a href="/" class="btn btn-danger btn-sm px-3">
         Salir
       </a>
     </div>
@@ -12,31 +20,52 @@
 
   {{#if hasVotedInElectivePosition}}
     <section
-      class="col-6 bg-danger rounded-3 text-white text-center mx-auto p-4 mt-5"
+      class="col-10 bg-danger alert alert-warning alert-dismissible fade show rounded-3 text-white text-center mx-auto p-4 mb-3"
+      role="alert"
     >
-      <h3 class="display-8 fw-normal text-uppercase fw-bolder m-0">
+      <h3 class="fs-4 fw-normal text-uppercase fw-bolder m-0">
         {{message}}
       </h3>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
     </section>
   {{/if}}
 
   {{#if hasCompletelyVoted}}
     <section
-      class="col-6 bg-danger rounded-3 text-white text-center mx-auto p-4 mt-5"
+      class="col-6 bg-danger rounded-3 alert alert-warning alert-dismissible fade show text-white text-center mx-auto p-4 mb-3"
+      role="alert"
     >
-      <h3 class="display-8 fw-normal text-uppercase fw-bolder m-0">
+      <h3 class="fs-4 fw-normal text-uppercase fw-bolder m-0">
         {{message}}
       </h3>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
     </section>
   {{/if}}
 
   {{#if votationNotEnded}}
     <section
-      class="col-6 bg-danger rounded-3 text-white text-center mx-auto p-4 mt-5"
+      class="col-10 bg-danger rounded-3 alert alert-warning alert-dismissible fade show text-white text-center mx-auto p-4 mb-3"
+      role="alert"
     >
-      <h3 class="display-8 fw-normal text-uppercase fw-bolder m-0">
+      <h3 class="fs-4 fw-normal text-uppercase fw-bolder m-0">
         {{message}}
       </h3>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
     </section>
   {{/if}}
 
