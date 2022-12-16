@@ -3,7 +3,8 @@ const Candidate = require("../models/candidate");
 const Vote = require("../models/vote");
 const Politic = require("../models/politic");
 const Election = require("../models/election");
-const Citizen = require("../models/citizen");
+const transporter = require("../services/mailService");
+// const Citizen = require("../models/citizen");
 // const ResultElection = require("../models/resultElection");
 
 exports.getIndex = (req, res, next) => {
@@ -39,9 +40,46 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCandidates = (req, res, next) => {
   const { electivePositionId } = req.params;
+  let voted = false;
 
   if (!electivePositionId) {
     return res.redirect("/vote");
+  }
+
+  Election.findOne({ where: { status: true } })
+    .then((result) => {
+      const election = result.dataValues;
+
+      Vote.findOne({
+        where: {
+          ElectivePositionId: electivePositionId,
+          ElectionId: election.id,
+          CitizenId: req.citizen.dataValues.id,
+        },
+      })
+        .then((result) => {
+          if (result) {
+            voted = true;
+          }
+        })
+        .catch((err) => console.error(err));
+    })
+    .catch((err) => console.error(err));
+
+  if (voted) {
+    ElectivePosition.findAll({ where: { status: true } })
+      .then((result) => {
+        const electivePositions = result.map((result) => result.dataValues);
+        res.render("vote/index", {
+          title: "Votos",
+          electivePositions,
+          hasElectivePositions: electivePositions.length > 0,
+          hasVoted: true,
+          message: "Usted ya ha votado en ese puesto, no puede volver a votar",
+        });
+      })
+      .catch((err) => console.error(err));
+    return;
   }
 
   Candidate.findAll({
@@ -131,4 +169,63 @@ exports.postCreate = (req, res, next) => {
     .catch((err) => console.error(err));
 };
 
-exports.getEndElection = (req, res, next) => {};
+exports.getEndVotation = (req, res, next) => {
+  ElectivePosition.findAll()
+    .then((result) => {
+      const electivePositionsCount = result.map(
+        (result) => result.dataValues
+      ).length;
+
+      Election.findOne({ where: { status: true } })
+        .then((result) => {
+          const election = result.dataValues;
+
+          Vote.findAll({
+            where: {
+              ElectionId: election.id,
+              CitizenId: req.citizen.dataValues.id,
+            },
+            include: [
+              { model: Politic },
+              { model: ElectivePosition },
+              { model: Election },
+            ],
+          })
+            .then((result) => {
+              const votes = result.map((result) => result.dataValues);
+              const votesCount = votes.length;
+
+              if (votesCount == electivePositionsCount) {
+                let votesPresentation = "";
+
+                votes.forEach((vote) => {
+                  votesPresentation += `<tr>
+                    <td>${vote.Candidate.dataValues.firstname} ${vote.Candidate.dataValues.lastname}</td>
+                    <td>${vote.ElectivePosition.dataValues.name}</td>
+                    <td>${vote.Politic.dataValues.name}</td>
+                  </tr>`;
+                });
+
+                transporter.sendMail({
+                  from: "Sistema de elecciones",
+                  to: req.citizen.dataValues.email,
+                  subject: `Resultados de sus votaciones en las elecciones ${new Date().getFullYear()}`,
+                  html: `<table>
+                          <thead>
+                            <th>Candidato</th>
+                            <th>Puesto electivo</th>
+                            <th>Partido</th>
+                          </thead>
+                          <tbody>
+                            ${votesPresentation}
+                          </tbody>
+                        </table>`,
+                });
+              }
+            })
+            .catch((err) => console.error(err));
+        })
+        .catch((err) => console.error(err));
+    })
+    .catch((err) => console.error(err));
+};
