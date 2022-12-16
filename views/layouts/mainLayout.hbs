@@ -44,11 +44,16 @@
                         </li>                        
                     </ul> 
                     {{else}}    
-                    <ul class="navbar-nav flex-grow-1 justify-content-end">                     
+
+                    {{#if isCitizenLogged}}                
+                    {{else}}                                        
+                     <ul class="navbar-nav flex-grow-1 justify-content-end">                     
                         <li class="nav-item text-end">
                             <a class="nav-link" href="/login">Iniciar Sesion</a>
                         </li>                        
-                    </ul>                                          
+                    </ul> 
+                    {{/if}}
+                    
                     {{/if}}
                 </div>
             </div>

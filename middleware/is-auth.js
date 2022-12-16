@@ -4,7 +4,8 @@ module.exports = (req, res, next) => {
       title: "Home",
       hasError: true,
       errorMessage: "No tienes permitdo entrar en este apartado"
-    });    
-  }  
+    });        
+  }
+ 
   next();
 };

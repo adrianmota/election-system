@@ -6,6 +6,5 @@ module.exports = (req, res, next) => {
       errorMessage: "No tienes permitido entrar en este apartado",
     });
   }
-
   next();
 };
