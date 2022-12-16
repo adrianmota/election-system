@@ -141,7 +141,7 @@ exports.postCreate = (req, res, next) => {
         Vote.create({
           CitizenId: req.citizen.dataValues.id,
           CandidateId: null,
-          PoliticId: politicId,
+          PoliticId: null,
           ElectivePositionId: electivePositionId,
           ElectionId: election.id,
         })
@@ -243,6 +243,11 @@ exports.postEndVotation = (req, res, next) => {
                         vote.Candidate.dataValues.lastName
                   }</td>
                   <td>${vote.ElectivePosition.dataValues.name}</td>
+                  <td>${
+                    !vote.Candidate
+                      ? "No aplica"
+                      : vote.Politic.dataValues.name
+                  }</td>
                 </tr>`;
               });
 

@@ -139,14 +139,13 @@ exports.createElection = (req, res, next) => {
   let hasError = false;
   let errorMessage = "";
 
+  let { name, dateRealization } = req.body;
+
   const fecha = Date.now();
   const now = new Date(fecha).toLocaleDateString();
 
-  let { name, dateRealization } = req.body;
-
   if (dateRealization.split("-").length == 3) {
     const newDate = dateRealization.split("-");
-
     dateRealization = `${newDate[2]}/${newDate[1]}/${newDate[0]}`;
   }
 
@@ -156,7 +155,6 @@ exports.createElection = (req, res, next) => {
     errorMessage = "Todos los campos son obligatorios.";
   }
 
-  console.log(errorMessage);
   if (hasError) {
     Election.findOne({ where: { status: true } })
       .then((result) => {
@@ -192,8 +190,6 @@ exports.createElection = (req, res, next) => {
     dateRealization: dateRealization,
     status: true,
   };
-
-  console.log(electionVM.dateRealization);
 
   Election.findOne({ where: { status: true } })
     .then((result) => {
@@ -357,7 +353,7 @@ exports.createElection = (req, res, next) => {
                           hasElection: election.length > 0,
                           hasElectionActive: hasElectionActive,
                           hasError: true,
-                          errorMessage:errorMessage                            
+                          errorMessage: errorMessage,
                         });
                       })
                       .catch((err) => {
