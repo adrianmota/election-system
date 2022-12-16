@@ -7,13 +7,14 @@
       class="col-6 d-flex justify-content-end align-items-center gap-1 text-end mt-4"
     >
       {{#if votationNotEnded}}
+      {{else}}
         <form method="POST" action="/vote/end">
           <button
             type="submit"
             class="btn btn-success btn-sm px-3"
           >Finalizar</button>
         </form>
-      {{/if}}
+        {{/if}}
       <form method="POST" action="/logout">
         <button
           type="submit"

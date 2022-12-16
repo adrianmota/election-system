@@ -528,7 +528,35 @@ exports.closedElection = (req, res, next) => {
 
       Election.update(electionVM, { where: { id: idElection } })
         .then((result) => {
-          res.redirect("/admin/election");
+
+          Vote.findAll({where:{ElectionId:idElection}}).then((result)=>{
+
+            const vote = result.map((result)=>result.dataValues);
+
+            ResultElection.findAll({where:{ElectionId:idElection}}).then((result)=>{
+
+              const resultados = result.map((result) => result.dataValues);
+
+              for(let x = 0; x< resultados.length;x++){
+
+                let votosPuesto = vote.filter((prop) => prop.CandidateId == resultados[x].CandidateId )
+
+                resultados[x].votes = votosPuesto.length;
+                let id = resultados[x].id;
+
+                ResultElection.update(resultados[x], {where:{id:id}}).then((result)=>{}).catch((err)=>{
+                  console.log(err);
+                })
+              }
+
+              res.redirect("/admin/election/");
+
+            }).catch((err)=>{
+              console.log(err);
+            })
+          }).catch((err)=>{
+            console.log(err);
+          })
         })
         .catch((err) => {
           console.log(err);
