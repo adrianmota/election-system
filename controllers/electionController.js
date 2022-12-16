@@ -66,16 +66,14 @@ exports.getResult = (req, res, next) => {
     return;
   }
 
-  Vote.findOne({
-    include: [
-      { model: Candidate },
-      { model: ElectivePosition },
-      { model: Politic },
-    ],
-    where: { id: 2 },
-  })
-    .then((result) => {
-      if (!result) {
+  ResultElection.findAll({where:{ElectionId :idElection }}).then((result)=>{        
+    let resultElection = result.map((result)=> result.dataValues);
+
+    if(!resultElection){
+      Election.findOne({ where: { status: true } })
+      .then((result) => {
+        const hasElectionActive = result ? true : false;
+
         Election.findAll()
           .then((result) => {
             const election = result.map((result) => result.dataValues);
@@ -86,53 +84,55 @@ exports.getResult = (req, res, next) => {
               module: "elections",
               election: electionOrden,
               hasElection: election.length > 0,
+              hasElectionActive: hasElectionActive,
               hasError: true,
-              errorMessage: "No se pudo encontrar la eleccion seleccionada.",
+              errorMessage:
+                "Hacen falta valores para poder buscar la eleccion.",
             });
           })
           .catch((err) => {
             console.log(err);
           });
-        Election.findOne({ where: { status: true } })
-          .then((result) => {
-            const hasElectionActive = result ? true : false;
-
-            Election.findAll()
-              .then((result) => {
-                const election = result.map((result) => result.dataValues);
-                const electionOrden = election.reverse((x) => x.id);
-
-                res.render("elections/index", {
-                  title: "Elections",
-                  module: "elections",
-                  election: electionOrden,
-                  hasElection: election.length > 0,
-                  hasElectionActive: hasElectionActive,
-                  hasError: true,
-                  errorMessage:
-                    "No se pudo encontrar la eleccion seleccionada.",
-                });
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        return;
-      }
-
-      const vote = result.dataValues;
-
-      res.render("elections/index", {
-        title: "Elections",
-        module: "elections",
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    })
-    .catch((err) => {
+      return;
+    }
+
+    for(let x = 0 ; x<resultElection.length;x++){
+
+      let idElectivePosition = resultElection[x].ElectivePositionId;
+
+      let contricantes = resultElection.filter((props) => props.ElectivePositionId == idElectivePosition);
+      let votesTotal = 0;
+
+      for(let y = 0; y < contricantes.length;y++){
+        votesTotal += contricantes[y].votes;
+      }
+      if(resultElection[x].votes == 0){
+        resultElection[x].porcentaje = `0%`
+      }
+      else{
+        resultElection[x].porcentaje = `${100*(resultElection[x].votes/votesTotal)}%`
+      }
+    }
+
+    ElectivePosition.findAll({where:{status:true}}).then((result)=>{
+      const electivePositionActive = result.dataValues;
+      res.render("elections/results", {
+        title: "Elections",
+        resultElection : resultElection,
+        hasResultElection : resultElection > 0,
+        electivePosition:electivePositionActive,
+      });  
+    }).catch((err)=>{
       console.log(err);
-    });
+    });  
+  }).catch((err)=>{
+    console.log(err);
+  });
+  
 };
 
 exports.createElection = (req, res, next) => {
