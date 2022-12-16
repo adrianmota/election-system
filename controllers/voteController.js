@@ -4,7 +4,7 @@ const Vote = require("../models/vote");
 const Politic = require("../models/politic");
 const Election = require("../models/election");
 const transporter = require("../services/mailService");
-// const Citizen = require("../models/citizen");
+const Citizen = require("../models/citizen");
 // const ResultElection = require("../models/resultElection");
 
 exports.getIndex = (req, res, next) => {
@@ -12,6 +12,15 @@ exports.getIndex = (req, res, next) => {
     return res.render("vote/index", {
       title: "Votos",
       citizenIsNotActive: true,
+    });
+  }
+
+  if (req.citizen.dataValues.voted) {
+    return res.render("vote/index", {
+      title: "Votos",
+      hasCompletelyVoted: true,
+      message:
+        "Usted ya realizó su proceso de votación, no puede volver a realizar votos en este proceso electoral",
     });
   }
 
@@ -74,7 +83,7 @@ exports.getCandidates = (req, res, next) => {
           title: "Votos",
           electivePositions,
           hasElectivePositions: electivePositions.length > 0,
-          hasVoted: true,
+          hasVotedInElectivePosition: true,
           message: "Usted ya ha votado en ese puesto, no puede volver a votar",
         });
       })
@@ -221,6 +230,17 @@ exports.getEndVotation = (req, res, next) => {
                           </tbody>
                         </table>`,
                 });
+
+                req.citizen.dataValues.voted = true;
+                Citizen.update(
+                  { voted: true },
+                  { where: { id: req.citizen.dataValues.id } }
+                )
+                  .then((result) => {
+                    console.log(result);
+                    return res.redirect("/vote/end");
+                  })
+                  .catch((err) => console.error(err));
               }
             })
             .catch((err) => console.error(err));
@@ -228,4 +248,17 @@ exports.getEndVotation = (req, res, next) => {
         .catch((err) => console.error(err));
     })
     .catch((err) => console.error(err));
+};
+
+exports.getEndVoteView = (req, res, next) => {
+  if (!res.citizen.dataValues.voted) {
+    return res.redirect("/vote");
+  }
+
+  return res.render("vote/end", {
+    title: "Votación finalizada",
+    votationEnded: true,
+    message:
+      "Su votación ha sido finalizada, revise la bandeja de entrada de su correo para ver los resultados",
+  });
 };
