@@ -98,8 +98,8 @@ exports.getCandidates = (req, res, next) => {
       const candidates = result.map((result) => result.dataValues);
       const none = {
         id: null,
-        firstname: "Ninguno",
-        lastname: "",
+        firstName: "Ninguno",
+        lastName: "",
         ElectivePosition: {
           dataValues: {
             id: candidates[0].ElectivePosition.dataValues.id,
@@ -145,6 +145,7 @@ exports.postCreate = (req, res, next) => {
           .catch((err) => console.error(err));
       })
       .catch((err) => console.error(err));
+      return;
   }
 
   Candidate.findOne({
@@ -157,7 +158,6 @@ exports.postCreate = (req, res, next) => {
       Election.findOne({ where: { status: true } })
         .then((result) => {
           const election = result.dataValues;
-          candidateId = candidateId ? candidateId : null;
 
           Vote.create({
             CitizenId: req.citizen.dataValues.id,

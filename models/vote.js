@@ -8,7 +8,7 @@ const Vote = sequelize.define("vote", {
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
-  }    
+  },
 });
 
 module.exports = Vote;
