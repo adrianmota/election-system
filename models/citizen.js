@@ -26,6 +26,11 @@ const Citizen = sequelize.define("Citizen", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  voted: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
   status: {
     type: Sequelize.BOOLEAN,
     defaultValue: true,
