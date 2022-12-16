@@ -3,17 +3,36 @@ const Candidate = require("../models/candidate");
 const Vote = require("../models/vote");
 const Politic = require("../models/politic");
 const Election = require("../models/election");
+const Citizen = require("../models/citizen");
 // const ResultElection = require("../models/resultElection");
 
 exports.getIndex = (req, res, next) => {
-  ElectivePosition.findAll({ where: { status: true } })
+  if (!req.citizen.dataValues.status) {
+    return res.render("vote/index", {
+      title: "Votos",
+      citizenIsNotActive: true
+    });
+  }
+
+  Election.findOne({ where: { status: true } })
     .then((result) => {
-      const electivePositions = result.map((result) => result.dataValues);
-      res.render("vote/index", {
-        title: "Votos",
-        electivePositions,
-        hasElectivePositions: electivePositions.length > 0,
-      });
+      if (!result) {
+        return res.render("vote/index", {
+          title: "Votos",
+          hasNoElection: true,
+        });
+      }
+
+      ElectivePosition.findAll({ where: { status: true } })
+        .then((result) => {
+          const electivePositions = result.map((result) => result.dataValues);
+          res.render("vote/index", {
+            title: "Votos",
+            electivePositions,
+            hasElectivePositions: electivePositions.length > 0,
+          });
+        })
+        .catch((err) => console.error(err));
     })
     .catch((err) => console.error(err));
 };
@@ -56,7 +75,7 @@ exports.postCreate = (req, res, next) => {
           candidateId = candidateId ? candidateId : null;
 
           Vote.create({
-            CitizenId: req.citizen.id,
+            CitizenId: req.citizen.dataValues.id,
             CandidateId: candidateId,
             PoliticId: candidate.PoliticId,
             ElectivePositionId: candidate.ElectivePositionId,
