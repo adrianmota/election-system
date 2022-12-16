@@ -3,9 +3,8 @@ const Candidate = require("../models/candidate");
 const Vote = require("../models/vote");
 const Politic = require("../models/politic");
 const Election = require("../models/election");
-const transporter = require("../services/mailService");
 const Citizen = require("../models/citizen");
-// const ResultElection = require("../models/resultElection");
+const transporter = require("../services/mailService");
 
 exports.getIndex = (req, res, next) => {
   if (!req.citizen.dataValues.status) {
@@ -204,44 +203,63 @@ exports.getEndVotation = (req, res, next) => {
               const votes = result.map((result) => result.dataValues);
               const votesCount = votes.length;
 
-              if (votesCount == electivePositionsCount) {
-                let votesPresentation = "";
-
-                votes.forEach((vote) => {
-                  votesPresentation += `<tr>
-                    <td>${vote.Candidate.dataValues.firstname} ${vote.Candidate.dataValues.lastname}</td>
-                    <td>${vote.ElectivePosition.dataValues.name}</td>
-                    <td>${vote.Politic.dataValues.name}</td>
-                  </tr>`;
-                });
-
-                transporter.sendMail({
-                  from: "Sistema de elecciones",
-                  to: req.citizen.dataValues.email,
-                  subject: `Resultados de sus votaciones en las elecciones ${new Date().getFullYear()}`,
-                  html: `<table>
-                          <thead>
-                            <th>Candidato</th>
-                            <th>Puesto electivo</th>
-                            <th>Partido</th>
-                          </thead>
-                          <tbody>
-                            ${votesPresentation}
-                          </tbody>
-                        </table>`,
-                });
-
-                req.citizen.dataValues.voted = true;
-                Citizen.update(
-                  { voted: true },
-                  { where: { id: req.citizen.dataValues.id } }
-                )
+              if (votesCount != electivePositionsCount) {
+                ElectivePosition.findAll({ where: { status: true } })
                   .then((result) => {
-                    console.log(result);
-                    return res.redirect("/vote/end");
+                    const electivePositions = result.map(
+                      (result) => result.dataValues
+                    );
+
+                    res.render("vote/index", {
+                      title: "Votos",
+                      electivePositions,
+                      hasElectivePositions: electivePositions.length > 0,
+                      votationNotEnded: true,
+                      message:
+                        "Usted no ha terminado de votar, verifique los puestos electivos restantes por votar",
+                    });
                   })
                   .catch((err) => console.error(err));
+
+                return;
               }
+
+              let votesPresentation = "";
+
+              votes.forEach((vote) => {
+                votesPresentation += `<tr>
+                  <td>${vote.Candidate.dataValues.firstname} ${vote.Candidate.dataValues.lastname}</td>
+                  <td>${vote.ElectivePosition.dataValues.name}</td>
+                  <td>${vote.Politic.dataValues.name}</td>
+                </tr>`;
+              });
+
+              transporter.sendMail({
+                from: "Sistema de elecciones",
+                to: req.citizen.dataValues.email,
+                subject: `Resultados de sus votaciones en las elecciones ${new Date().getFullYear()}`,
+                html: `<table>
+                        <thead>
+                          <th>Candidato</th>
+                          <th>Puesto electivo</th>
+                          <th>Partido</th>
+                        </thead>
+                        <tbody>
+                          ${votesPresentation}
+                        </tbody>
+                      </table>`,
+              });
+
+              req.citizen.dataValues.voted = true;
+              Citizen.update(
+                { voted: true },
+                { where: { id: req.citizen.dataValues.id } }
+              )
+                .then((result) => {
+                  console.log(result);
+                  return res.redirect("/vote/end");
+                })
+                .catch((err) => console.error(err));
             })
             .catch((err) => console.error(err));
         })
