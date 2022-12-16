@@ -98,8 +98,8 @@ exports.getCandidates = (req, res, next) => {
       const candidates = result.map((result) => result.dataValues);
       const none = {
         id: null,
-        firstname: "Ninguno",
-        lastname: "",
+        firstName: "Ninguno",
+        lastName: "",
         ElectivePosition: {
           dataValues: {
             id: candidates[0].ElectivePosition.dataValues.id,
